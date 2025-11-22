@@ -13,6 +13,7 @@ async function main() {
     const admin = await prisma.user.upsert({
         where: { username: 'admin' },
         update: {
+            password: hashedPassword, // Reset password to default
             mustChangePassword: true, // Force password change even for existing users
         },
         create: {
@@ -27,6 +28,7 @@ async function main() {
     const staff = await prisma.user.upsert({
         where: { username: 'staff' },
         update: {
+            password: hashedPassword, // Reset password to default
             mustChangePassword: true, // Force password change even for existing users
         },
         create: {
