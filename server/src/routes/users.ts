@@ -86,16 +86,22 @@ router.patch('/me/password', authenticate, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const isValid = await bcrypt.compare(currentPassword, user.password);
-        if (!isValid) {
-            return res.status(401).json({ error: 'Current password is incorrect' });
+        // If user must change password (first login), skip current password check
+        if (!user.mustChangePassword) {
+            const isValid = await bcrypt.compare(currentPassword, user.password);
+            if (!isValid) {
+                return res.status(401).json({ error: 'Current password is incorrect' });
+            }
         }
 
-        // Update password
+        // Update password and clear mustChangePassword flag
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await prisma.user.update({
             where: { id: userId },
-            data: { password: hashedPassword }
+            data: {
+                password: hashedPassword,
+                mustChangePassword: false // Clear the flag after password change
+            }
         });
 
         await prisma.auditLog.create({

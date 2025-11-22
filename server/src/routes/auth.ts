@@ -34,6 +34,16 @@ router.post('/login', async (req, res) => {
         });
 
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+
+        // Check if user must change password
+        if (user.mustChangePassword) {
+            return res.json({
+                user: { id: user.id, username: user.username, name: user.name, role: user.role },
+                mustChangePassword: true,
+                message: 'You must change your password before continuing'
+            });
+        }
+
         res.json({ user: { id: user.id, username: user.username, name: user.name, role: user.role } });
     } catch (error) {
         console.error('Login error:', error);
