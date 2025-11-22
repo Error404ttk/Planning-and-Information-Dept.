@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   username  String   @unique
   password  String
   name      String
@@ -18,10 +18,10 @@ model User {
 }
 
 model NewsArticle {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   title     String
-  excerpt   String
-  content   String?
+  excerpt   String   @db.Text
+  content   String?  @db.Text
   imageUrl  String
   date      String
   createdAt DateTime @default(now())
@@ -29,20 +29,20 @@ model NewsArticle {
 }
 
 model AuditLog {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   action      String
   entity      String
-  details     String
+  details     String   @db.Text
   performedBy String
   timestamp   DateTime @default(now())
 }
 
 model Resource {
-  id        String   @id @default(uuid())
-  title     String
-  category  String
+  id          String   @id @default(cuid())
+  title       String
+  category    String
   subcategory String?
-  fileUrl   String
-  fileType  String
-  createdAt DateTime @default(now())
+  fileUrl     String
+  fileType    String
+  createdAt   DateTime @default(now())
 }
