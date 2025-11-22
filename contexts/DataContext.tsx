@@ -20,6 +20,7 @@ export const useData = () => {
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // --- Authentication State ---
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [mustChangePassword, setMustChangePassword] = useState<boolean>(false);
 
   // --- Data State ---
   const [users, setUsers] = useState<User[]>([]);
@@ -98,6 +99,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.ok) {
         const data = await res.json();
         setCurrentUser(data.user);
+
+        // Check if password change is required
+        if (data.mustChangePassword) {
+          setMustChangePassword(true);
+          return true; // Login successful but needs password change
+        }
+
         if (data.user.role === 'SUPER_ADMIN') fetchUsers();
         return true;
       }
@@ -112,9 +120,35 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       setCurrentUser(null);
+      setMustChangePassword(false);
       setUsers([]); // Clear sensitive data
     } catch (error) {
       console.error("Logout error", error);
+    }
+  };
+
+  const changePassword = async (newPassword: string, currentPassword?: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const body = mustChangePassword
+        ? { newPassword }  // First login - no current password needed
+        : { currentPassword, newPassword };  // Normal change - current password required
+
+      const res = await fetch('/api/users/me/password', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        setMustChangePassword(false);
+        return { success: true };
+      } else {
+        const data = await res.json();
+        return { success: false, error: data.error || 'Failed to change password' };
+      }
+    } catch (error) {
+      console.error("Change password error", error);
+      return { success: false, error: 'Network error' };
     }
   };
 
@@ -323,9 +357,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <DataContext.Provider value={{
       currentUser,
+      mustChangePassword,
       users,
       login,
       logout,
+      changePassword,
       addUser,
       updateUser,
       deleteUser,

@@ -56,9 +56,11 @@ export interface Resource {
 export interface DataContextType {
   // Auth & Users
   currentUser: User | null;
+  mustChangePassword: boolean;
   users: User[];
   login: (username: string, password: string) => Promise<boolean>; // Async for hashing
   logout: () => void;
+  changePassword: (newPassword: string, currentPassword?: string) => Promise<{ success: boolean; error?: string }>;
   addUser: (user: User) => Promise<void>; // Async for hashing
   updateUser: (user: User) => Promise<void>; // Async for hashing
   deleteUser: (id: string) => void;

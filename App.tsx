@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import BackToTopButton from './components/BackToTopButton';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import AdminDashboard from './components/AdminDashboard';
+import ChangePasswordModal from './components/ChangePasswordModal';
 import { useData } from './contexts/DataContext';
 
 const App: React.FC = () => {
@@ -22,7 +23,7 @@ const App: React.FC = () => {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
 
-  const { login, logout, currentUser } = useData();
+  const { login, logout, currentUser, mustChangePassword } = useData();
 
   // Listen for custom event from Footer/Header to open Admin login
   useEffect(() => {
@@ -102,6 +103,14 @@ const App: React.FC = () => {
     return (
       <>
         {isLoading && <LoadingOverlay text="กำลังออกจากระบบ..." />}
+        {mustChangePassword && (
+          <ChangePasswordModal
+            onPasswordChanged={() => {
+              // Refresh page or just close modal - flag is already cleared
+              window.location.reload();
+            }}
+          />
+        )}
         <div className="animate-[fadeIn_0.5s_ease-out]">
           <AdminDashboard onLogout={handleLogout} currentUser={currentUser} />
         </div>
@@ -202,10 +211,10 @@ const App: React.FC = () => {
                 type="submit"
                 disabled={isLoading || isLocked || loginSuccess}
                 className={`flex-[2] px-4 py-2.5 text-white rounded-lg transition-all duration-200 shadow-lg flex items-center justify-center gap-2 font-medium ${loginSuccess
-                    ? 'bg-green-500 scale-105'
-                    : (isLoading || isLocked)
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-green-600 to-green-700 hover:shadow-green-600/30 hover:scale-[1.02] active:scale-[0.98]'
+                  ? 'bg-green-500 scale-105'
+                  : (isLoading || isLocked)
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-green-600 to-green-700 hover:shadow-green-600/30 hover:scale-[1.02] active:scale-[0.98]'
                   }`}
               >
                 {loginSuccess ? (
