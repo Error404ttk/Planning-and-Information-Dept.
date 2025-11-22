@@ -1,12 +1,37 @@
 node_modules
+
 # Keep environment variables out of version control
 .env
+.env.local
+.env.production
+
+# Database files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Uploaded files (may contain sensitive user data)
+uploads/
+!uploads/.gitkeep
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
 /src/generated/prisma
-
-# Database
-*.db
-dev.db
-
-# Uploads
-uploads/
