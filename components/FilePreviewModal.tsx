@@ -1,0 +1,113 @@
+import React from 'react';
+
+interface FilePreviewModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    fileUrl: string;
+    fileType: string;
+    title: string;
+}
+
+const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fileUrl, fileType, title }) => {
+    if (!isOpen) return null;
+
+    const isImage = fileType.startsWith('image/');
+    const isPdf = fileType === 'application/pdf';
+
+    // For localhost, Google Docs Viewer won't work with local URLs.
+    // In a real production environment with a public URL, this would work.
+    // We'll add a check or just attempt to render it, but provide a fallback message/button.
+    const isOffice = !isImage && !isPdf;
+
+    // Construct full URL if it's a relative path (for Google Docs Viewer)
+    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${window.location.origin}${fileUrl}`;
+    const googleDocsUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fullUrl)}&embedded=true`;
+
+    return (
+        <div className="fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                {/* Background overlay */}
+                <div
+                    className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                    aria-hidden="true"
+                    onClick={onClose}
+                ></div>
+
+                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div className="flex justify-between items-start mb-4">
+                            <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                {title}
+                            </h3>
+                            <button
+                                onClick={onClose}
+                                type="button"
+                                className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                            >
+                                <span className="sr-only">Close</span>
+                                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className="mt-2 h-[60vh] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                            {isImage && (
+                                <img src={fileUrl} alt={title} className="max-w-full max-h-full object-contain" />
+                            )}
+
+                            {isPdf && (
+                                <iframe src={fileUrl} className="w-full h-full" title={title}></iframe>
+                            )}
+
+                            {isOffice && (
+                                <div className="w-full h-full relative">
+                                    {/* Warning for localhost */}
+                                    {window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? (
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 p-4">
+                                            <svg className="w-16 h-16 mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            </svg>
+                                            <p className="text-center mb-2">ไม่สามารถแสดงตัวอย่างไฟล์ Office บน Localhost ได้</p>
+                                            <p className="text-sm text-gray-400 text-center">Google Docs Viewer ต้องการ URL ที่เข้าถึงได้จากสาธารณะ</p>
+                                        </div>
+                                    ) : (
+                                        <iframe
+                                            src={googleDocsUrl}
+                                            className="w-full h-full border-none"
+                                            title={title}
+                                            onError={() => console.log('Error loading Google Docs Viewer')}
+                                        ></iframe>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <a
+                            href={fileUrl}
+                            download
+                            target="_blank"
+                            rel="noreferrer"
+                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                        >
+                            ดาวน์โหลดไฟล์
+                        </a>
+                        <button
+                            type="button"
+                            className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                            onClick={onClose}
+                        >
+                            ปิด
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default FilePreviewModal;

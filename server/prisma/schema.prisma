@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  name      String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NewsArticle {
+  id        String   @id @default(uuid())
+  title     String
+  excerpt   String
+  content   String?
+  imageUrl  String
+  date      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  action      String
+  entity      String
+  details     String
+  performedBy String
+  timestamp   DateTime @default(now())
+}
+
+model Resource {
+  id        String   @id @default(uuid())
+  title     String
+  category  String
+  subcategory String?
+  fileUrl   String
+  fileType  String
+  createdAt DateTime @default(now())
+}
