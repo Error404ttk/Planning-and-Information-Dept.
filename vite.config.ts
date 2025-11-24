@@ -9,6 +9,11 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       host: '0.0.0.0',
       strictPort: false,
+      allowedHosts: [
+        'localhost',
+        '192.168.99.221',
+        'it.sarapeehospital.go.th'
+      ],
       proxy: {
         '/api': {
           target: 'http://localhost:3007',
