@@ -45,9 +45,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const data = await res.json();
         setCurrentUser(data.user);
         if (data.user.role === 'SUPER_ADMIN') fetchUsers();
+      } else if (res.status === 429) {
+        // Rate limited - ignore silently
+        console.log('Rate limited, skipping auth check');
       }
     } catch (err) {
-      console.error("Auth check failed", err);
+      // Silently fail - user not logged in is OK
     }
   };
 
