@@ -5,6 +5,7 @@ module.exports = {
             cwd: './server',
             script: 'npx',
             args: 'ts-node src/index.ts',
+            // For production: set watch to false
             watch: ['src'],
             ignore_watch: ['node_modules', 'logs', 'uploads', '.git'],
             env: {
@@ -15,20 +16,25 @@ module.exports = {
                 NODE_ENV: 'production',
                 PORT: 3007
             },
-            error_file: './logs/backend-error.log',
-            out_file: './logs/backend-out.log',
+            max_memory_restart: '500M',
+            error_file: 'logs/backend-error.log',
+            out_file: 'logs/backend-out.log',
             log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+            // For production cluster mode: uncomment below
+            // instances: 'max',
+            // exec_mode: 'cluster'
             merge_logs: true,
             autorestart: true,
             max_restarts: 10,
-            min_uptime: '10s',
-            max_memory_restart: '500M'
+            min_uptime: '10s'
         },
         {
             name: 'saraphi-frontend',
             cwd: './',
             script: 'npm',
             args: 'run dev',
+            // Note: In production, serve frontend as static files via Nginx/Apache
+            // This is only for development
             env: {
                 NODE_ENV: 'development'
             },
