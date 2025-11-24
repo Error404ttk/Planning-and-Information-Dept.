@@ -43,8 +43,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();
-        setCurrentUser(data.user);
-        if (data.user.role === 'SUPER_ADMIN') fetchUsers();
+        if (data.user) {
+          setCurrentUser(data.user);
+          if (data.user.role === 'SUPER_ADMIN') fetchUsers();
+        } else {
+          setCurrentUser(null);
+        }
       } else if (res.status === 429) {
         // Rate limited - ignore silently
         console.log('Rate limited, skipping auth check');
