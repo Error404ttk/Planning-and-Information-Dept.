@@ -169,14 +169,14 @@ const Header: React.FC = () => {
                                           setPreviewFile(res.resource);
                                         }
                                       }}
-                                      className=\"block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2 cursor-pointer border-0 bg-transparent\"
+                                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2 cursor-pointer border-0 bg-transparent"
                                     >
-                                      <svg className=\"w-4 h-4 text-gray-400\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">
-                                        <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth=\"2\" d=\"M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z\" />
+                                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                       </svg>
                                       {res.name}
                                       {res.resource?.downloadCount > 0 && (
-                                        <span className=\"ml-auto text-xs text-gray-400\">({res.resource.downloadCount})</span>
+                                        <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
                                       )}
                                     </button>
                                   ))}
@@ -219,146 +219,146 @@ const Header: React.FC = () => {
             </button>
           </div >
 
-  <div className="-mr-2 flex lg:hidden">
-    <button
-      onClick={() => setIsMenuOpen(!isMenuOpen)}
-      type="button"
-      className="bg-green-600 inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
-      aria-controls="mobile-menu"
-      aria-expanded="false"
-    >
-      <span className="sr-only">Open main menu</span>
-      {!isMenuOpen ? (
-        <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      ) : (
-        <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      )}
-    </button>
-  </div>
+          <div className="-mr-2 flex lg:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              type="button"
+              className="bg-green-600 inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+            >
+              <span className="sr-only">Open main menu</span>
+              {!isMenuOpen ? (
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              ) : (
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div >
       </div >
-  <div className={`${isMenuOpen ? 'block' : 'hidden'} lg:hidden`} id="mobile-menu">
-    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      <div className={`${isMenuOpen ? 'block' : 'hidden'} lg:hidden`} id="mobile-menu">
+        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
 
 
-      {displayNavLinks.map((link) => (
-        <div key={link.id || link.name}>
-          {link.submenu ? (
-            <>
-              <button
-                onClick={() => toggleSubMenu(link.name)}
-                className="w-full text-left text-gray-700 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium flex justify-between items-center"
-              >
-                <span>{link.name}</span>
-                <ChevronDownIcon
-                  className={`w-5 h-5 transition-transform ${openSubMenu === link.name ? 'rotate-180' : ''
-                    }`}
-                />
-              </button>
-              <div
-                className={`${openSubMenu === link.name ? 'block' : 'hidden'
-                  } pl-4 pt-2 pb-1 space-y-1`}
-              >
-                {link.submenu.map((sublink) => (
-                  sublink.submenu && sublink.submenu.length > 0 ? (
-                    <div key={sublink.id || sublink.name} className="space-y-1">
-                      <div className="text-gray-500 px-3 py-1 text-sm font-semibold">{sublink.name}</div>
-                      {sublink.submenu.map((res: any) => {
-                        const isPdf = res.resource?.fileType === 'application/pdf';
-                        const isOffice = res.resource?.fileType?.includes('word') ||
-                          res.resource?.fileType?.includes('excel') ||
-                          res.resource?.fileType?.includes('msword') ||
-                          res.resource?.fileType?.includes('spreadsheet');
+          {displayNavLinks.map((link) => (
+            <div key={link.id || link.name}>
+              {link.submenu ? (
+                <>
+                  <button
+                    onClick={() => toggleSubMenu(link.name)}
+                    className="w-full text-left text-gray-700 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium flex justify-between items-center"
+                  >
+                    <span>{link.name}</span>
+                    <ChevronDownIcon
+                      className={`w-5 h-5 transition-transform ${openSubMenu === link.name ? 'rotate-180' : ''
+                        }`}
+                    />
+                  </button>
+                  <div
+                    className={`${openSubMenu === link.name ? 'block' : 'hidden'
+                      } pl-4 pt-2 pb-1 space-y-1`}
+                  >
+                    {link.submenu.map((sublink) => (
+                      sublink.submenu && sublink.submenu.length > 0 ? (
+                        <div key={sublink.id || sublink.name} className="space-y-1">
+                          <div className="text-gray-500 px-3 py-1 text-sm font-semibold">{sublink.name}</div>
+                          {sublink.submenu.map((res: any) => {
+                            const isPdf = res.resource?.fileType === 'application/pdf';
+                            const isOffice = res.resource?.fileType?.includes('word') ||
+                              res.resource?.fileType?.includes('excel') ||
+                              res.resource?.fileType?.includes('msword') ||
+                              res.resource?.fileType?.includes('spreadsheet');
 
-                        const handleClick = (e: React.MouseEvent) => {
-                          if (res.isResource) {
-                            trackDownload(res.resource.id);
+                            const handleClick = (e: React.MouseEvent) => {
+                              if (res.isResource) {
+                                trackDownload(res.resource.id);
 
-                            if (isOffice) {
-                              e.preventDefault();
-                              // Get full URL for Google Docs Viewer
-                              const fullUrl = res.href.startsWith('http')
-                                ? res.href
-                                : `${window.location.origin}${res.href}`;
-                              const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
-                              window.open(viewerUrl, '_blank');
-                            }
-                          }
-                        };
+                                if (isOffice) {
+                                  e.preventDefault();
+                                  // Get full URL for Google Docs Viewer
+                                  const fullUrl = res.href.startsWith('http')
+                                    ? res.href
+                                    : `${window.location.origin}${res.href}`;
+                                  const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
+                                  window.open(viewerUrl, '_blank');
+                                }
+                              }
+                            };
 
-                        return (
-                          <a
-                            key={res.id || res.name}
-                            href={res.href}
-                            target="_blank"
-                            onClick={handleClick}
-                            className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2"
-                          >
-                            <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                            - {res.name}
-                            {res.resource?.downloadCount > 0 && (
-                              <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
-                            )}
-                            {isOffice && (
-                              <svg className="w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                              </svg>
-                            )}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <a
-                      key={sublink.id || sublink.name}
-                      href={sublink.href}
-                      className="text-gray-600 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium"
-                    >
-                      {sublink.name}
-                    </a>
-                  )
-                ))}
-              </div>
-            </>
-          ) : (
-            <a
-              href={link.href}
-              className="text-gray-700 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              {link.name}
-            </a>
-          )}
+                            return (
+                              <a
+                                key={res.id || res.name}
+                                href={res.href}
+                                target="_blank"
+                                onClick={handleClick}
+                                className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2"
+                              >
+                                <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                                - {res.name}
+                                {res.resource?.downloadCount > 0 && (
+                                  <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
+                                )}
+                                {isOffice && (
+                                  <svg className="w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                  </svg>
+                                )}
+                              </a>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <a
+                          key={sublink.id || sublink.name}
+                          href={sublink.href}
+                          className="text-gray-600 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium"
+                        >
+                          {sublink.name}
+                        </a>
+                      )
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <a
+                  href={link.href}
+                  className="text-gray-700 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium"
+                >
+                  {link.name}
+                </a>
+              )}
+            </div>
+          ))}
+
+          <button
+            onClick={handleAdminLogin}
+            className="w-full text-left text-gray-700 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium flex items-center gap-2 border-t border-gray-200 mt-4 pt-3"
+          >
+            <UserIcon className="w-5 h-5" />
+            <span>เข้าสู่ระบบผู้ดูแลระบบ</span>
+          </button>
         </div>
-      ))}
-
-      <button
-        onClick={handleAdminLogin}
-        className="w-full text-left text-gray-700 hover:bg-green-100 hover:text-green-800 block px-3 py-2 rounded-md text-base font-medium flex items-center gap-2 border-t border-gray-200 mt-4 pt-3"
-      >
-        <UserIcon className="w-5 h-5" />
-        <span>เข้าสู่ระบบผู้ดูแลระบบ</span>
-      </button>
-    </div>
-  </div>
+      </div>
 
     </header >
 
 {
-  previewFile && (
-    <FilePreviewModal
-      isOpen={!!previewFile}
-      onClose={() => setPreviewFile(null)}
-      fileUrl={previewFile.fileUrl}
-      fileType={previewFile.fileType}
-      title={previewFile.title}
-    />
-  )
+    previewFile && (
+      <FilePreviewModal
+        isOpen={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+        fileUrl={previewFile.fileUrl}
+        fileType={previewFile.fileType}
+        title={previewFile.title}
+      />
+    )
   }
     </>
   );
