@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
+import FilePreviewModal from './FilePreviewModal';
+import { Resource } from '../types';
 
 const Header: React.FC = () => {
   const { navLinks, resources } = useData();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [previewFile, setPreviewFile] = useState<Resource | null>(null);
 
   // Track download function
   const trackDownload = async (resourceId: string) => {
@@ -371,6 +374,19 @@ const Header: React.FC = () => {
       </div>
 
     </header>
+
+      {
+    previewFile && (
+      <FilePreviewModal
+        isOpen={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+        fileUrl={previewFile.fileUrl}
+        fileType={previewFile.fileType}
+        title={previewFile.title}
+      />
+    )
+  }
+    </>
   );
 };
 

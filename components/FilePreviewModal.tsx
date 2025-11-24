@@ -11,113 +11,104 @@ interface FilePreviewModalProps {
 const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fileUrl, fileType, title }) => {
     if (!isOpen) return null;
 
-    const isImage = fileType.startsWith('image/');
     const isPdf = fileType === 'application/pdf';
+    const isImage = fileType.startsWith('image/');
+    const isOffice = fileType.includes('word') ||
+        fileType.includes('excel') ||
+        fileType.includes('msword') ||
+        fileType.includes('spreadsheet');
 
-    // For localhost, Google Docs Viewer won't work with local URLs.
-    // In a real production environment with a public URL, this would work.
-    // We'll add a check or just attempt to render it, but provide a fallback message/button.
-    const isOffice = !isImage && !isPdf;
+    // Get full URL for Google Docs Viewer
+    const fullUrl = fileUrl.startsWith('http')
+        ? fileUrl
+        : `${window.location.origin}${fileUrl}`;
 
-    // Construct full URL if it's a relative path (for Google Docs Viewer)
-    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${window.location.origin}${fileUrl}`;
-    const googleDocsUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fullUrl)}&embedded=true`;
+    const viewerUrl = isOffice
+        ? `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`
+        : fileUrl;
 
     return (
-        <div className="fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                {/* Background overlay */}
+        <div className="fixed inset-0 z-50 overflow-y-auto" onClick={onClose}>
+            <div className="flex min-h-screen items-center justify-center p-4">
+                {/* Backdrop */}
+                <div className="fixed inset-0 bg-black bg-opacity-75 transition-opacity"></div>
+
+                {/* Modal */}
                 <div
-                    className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                    aria-hidden="true"
-                    onClick={onClose}
-                ></div>
-
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div className="flex justify-between items-start mb-4">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                {title}
-                            </h3>
+                    className="relative bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                        <h3 className="text-lg font-semibold text-gray-900 truncate pr-4">
+                            {title}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                            <a
+                                href={fileUrl}
+                                download
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                ดาวน์โหลด
+                            </a>
                             <button
                                 onClick={onClose}
-                                type="button"
-                                className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                             >
-                                <span className="sr-only">Close</span>
-                                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
-
-                        <div className="mt-2 h-[60vh] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                            {isImage && (
-                                <img src={fileUrl} alt={title} className="max-w-full max-h-full object-contain" />
-                            )}
-
-                            {isPdf && (
-                                <iframe src={fileUrl} className="w-full h-full" title={title}></iframe>
-                            )}
-
-                            {isOffice && (
-                                <div className="w-full h-full relative">
-                                    {/* Try to show preview with Google Docs Viewer */}
-                                    <iframe
-                                        src={googleDocsUrl}
-                                        className="w-full h-full border-none"
-                                        title={title}
-                                        onError={() => console.log('Error loading Google Docs Viewer')}
-                                    ></iframe>
-
-                                    {/* Overlay message for localhost */}
-                                    {(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
-                                        <div className="absolute top-0 left-0 right-0 bg-yellow-50 border-b-2 border-yellow-200 p-3">
-                                            <div className="flex items-start">
-                                                <svg className="w-5 h-5 text-yellow-600 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                </svg>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium text-yellow-800">
-                                                        ไม่สามารถแสดงตัวอย่างไฟล์ Office บน Localhost ได้
-                                                    </p>
-                                                    <p className="text-xs text-yellow-700 mt-1">
-                                                        Google Docs Viewer ต้องการ URL สาธารณะ • กรุณาใช้ปุ่ม "ดาวน์โหลดไฟล์" ด้านล่าง
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
                     </div>
 
-                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-3">
-                        <a
-                            href={fileUrl}
-                            download
-                            target="_blank"
-                            rel="noreferrer"
-                            className={`w-full inline-flex justify-center items-center gap-2 rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-auto sm:text-sm ${isOffice
-                                    ? 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
-                                    : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
-                                }`}
-                        >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            {isOffice ? 'ดาวน์โหลดไฟล์ (แนะนำ)' : 'ดาวน์โหลดไฟล์'}
-                        </a>
-                        <button
-                            type="button"
-                            className="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
-                            onClick={onClose}
-                        >
-                            ปิด
-                        </button>
+                    {/* Content */}
+                    <div className="flex-1 overflow-hidden bg-gray-50">
+                        {isPdf && (
+                            <iframe
+                                src={fileUrl}
+                                className="w-full h-full min-h-[600px]"
+                                title={title}
+                            />
+                        )}
+
+                        {isImage && (
+                            <div className="flex items-center justify-center h-full p-4">
+                                <img
+                                    src={fileUrl}
+                                    alt={title}
+                                    className="max-w-full max-h-full object-contain"
+                                />
+                            </div>
+                        )}
+
+                        {isOffice && (
+                            <iframe
+                                src={viewerUrl}
+                                className="w-full h-full min-h-[600px]"
+                                title={title}
+                            />
+                        )}
+
+                        {!isPdf && !isImage && !isOffice && (
+                            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+                                <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                                <p className="text-gray-600 mb-4">ไม่สามารถแสดงตัวอย่างไฟล์ประเภทนี้ได้</p>
+                                <a
+                                    href={fileUrl}
+                                    download
+                                    className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                                >
+                                    ดาวน์โหลดไฟล์
+                                </a>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
