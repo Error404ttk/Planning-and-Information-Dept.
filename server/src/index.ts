@@ -26,6 +26,9 @@ if (missingEnvVars.length > 0) {
 const app = express();
 const PORT = process.env.PORT || 3007;
 
+// Trust proxy - required when behind Nginx/Apache reverse proxy
+app.set('trust proxy', true);
+
 // Security headers
 app.use(helmet());
 
