@@ -24,7 +24,7 @@ if (missingEnvVars.length > 0) {
 }
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3007;
 
 // Security headers
 app.use(helmet());
