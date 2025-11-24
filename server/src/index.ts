@@ -29,17 +29,17 @@ const PORT = process.env.PORT || 3007;
 // Security headers
 app.use(helmet());
 
-// Rate limiting
+// General rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    max: process.env.NODE_ENV === 'production' ? 100 : 500, // Higher limit for development (React Strict Mode doubles requests)
     message: 'Too many requests from this IP, please try again later.'
 });
 
 // Stricter rate limiting for auth routes
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP to 5 login attempts per windowMs
+    max: process.env.NODE_ENV === 'production' ? 5 : 20, // Higher limit for development
     message: 'Too many login attempts, please try again later.'
 });
 
