@@ -323,9 +323,9 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-    </header >
+    </header>
 
-{
+      {
     previewFile && (
       <FilePreviewModal
         isOpen={!!previewFile}
