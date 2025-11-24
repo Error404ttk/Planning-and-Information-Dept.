@@ -156,28 +156,42 @@ const Header: React.FC = () => {
                               {/* 3rd Level Dropdown */}
                               <div className="absolute left-full top-0 opacity-0 invisible group-hover/sub:visible group-hover/sub:opacity-100 transform-gpu translate-x-1 group-hover/sub:translate-x-0 transition-all duration-200 ease-out pl-1 top-[-4px]">
                                 <div className="bg-white shadow-lg rounded-md py-1 w-64 ring-1 ring-black ring-opacity-5">
-                                  {sublink.submenu.map((res: any) => (
-                                    <a
-                                      key={res.id || res.name}
-                                      href={res.href}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      onClick={(e) => {
-                                        if (res.isResource) {
-                                          trackDownload(res.resource.id);
-                                        }
-                                      }}
-                                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2"
-                                    >
-                                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                      </svg>
-                                      {res.name}
-                                      {res.resource?.downloadCount > 0 && (
-                                        <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
-                                      )}
-                                    </a>
-                                  ))}
+                                  {sublink.submenu.map((res: any) => {
+                                    const isPdf = res.resource?.fileType === 'application/pdf';
+                                    const isOffice = res.resource?.fileType?.includes('word') ||
+                                      res.resource?.fileType?.includes('excel') ||
+                                      res.resource?.fileType?.includes('msword') ||
+                                      res.resource?.fileType?.includes('spreadsheet');
+
+                                    return (
+                                      <a
+                                        key={res.id || res.name}
+                                        href={res.href}
+                                        target={isPdf ? "_blank" : "_self"}
+                                        rel="noreferrer"
+                                        download={isOffice ? true : undefined}
+                                        onClick={(e) => {
+                                          if (res.isResource) {
+                                            trackDownload(res.resource.id);
+                                          }
+                                        }}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2"
+                                      >
+                                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                        {res.name}
+                                        {res.resource?.downloadCount > 0 && (
+                                          <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
+                                        )}
+                                        {isOffice && (
+                                          <svg className="w-4 h-4 text-blue-500 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                          </svg>
+                                        )}
+                                      </a>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             </div>
@@ -265,27 +279,41 @@ const Header: React.FC = () => {
                       sublink.submenu && sublink.submenu.length > 0 ? (
                         <div key={sublink.id || sublink.name} className="space-y-1">
                           <div className="text-gray-500 px-3 py-1 text-sm font-semibold">{sublink.name}</div>
-                          {sublink.submenu.map((res: any) => (
-                            <a
-                              key={res.id || res.name}
-                              href={res.href}
-                              target="_blank"
-                              onClick={(e) => {
-                                if (res.isResource) {
-                                  trackDownload(res.resource.id);
-                                }
-                              }}
-                              className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2"
-                            >
-                              <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                              </svg>
-                              - {res.name}
-                              {res.resource?.downloadCount > 0 && (
-                                <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
-                              )}
-                            </a>
-                          ))}
+                          {sublink.submenu.map((res: any) => {
+                            const isPdf = res.resource?.fileType === 'application/pdf';
+                            const isOffice = res.resource?.fileType?.includes('word') ||
+                              res.resource?.fileType?.includes('excel') ||
+                              res.resource?.fileType?.includes('msword') ||
+                              res.resource?.fileType?.includes('spreadsheet');
+
+                            return (
+                              <a
+                                key={res.id || res.name}
+                                href={res.href}
+                                target={isPdf ? "_blank" : "_self"}
+                                download={isOffice ? true : undefined}
+                                onClick={(e) => {
+                                  if (res.isResource) {
+                                    trackDownload(res.resource.id);
+                                  }
+                                }}
+                                className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2"
+                              >
+                                <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                                - {res.name}
+                                {res.resource?.downloadCount > 0 && (
+                                  <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
+                                )}
+                                {isOffice && (
+                                  <svg className="w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                  </svg>
+                                )}
+                              </a>
+                            );
+                          })}
                         </div>
                       ) : (
                         <a
