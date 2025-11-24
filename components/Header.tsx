@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
-import FilePreviewModal from './FilePreviewModal';
-import { Resource } from '../types';
 
 const Header: React.FC = () => {
   const { navLinks, resources } = useData();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [previewFile, setPreviewFile] = useState<Resource | null>(null);
+
+  // Track download function
+  const trackDownload = async (resourceId: string) => {
+    try {
+      await fetch(`/api/resources/${resourceId}/download`, {
+        method: 'POST'
+      });
+    } catch (error) {
+      console.error('Failed to track download:', error);
+    }
+  };
 
   // Merge resources into navigation
   const displayNavLinks = React.useMemo(() => {
@@ -152,17 +160,22 @@ const Header: React.FC = () => {
                                     <a
                                       key={res.id || res.name}
                                       href={res.href}
-                                      target={res.href.startsWith('http') || res.href.startsWith('/') ? '_blank' : '_self'}
+                                      target="_blank"
                                       rel="noreferrer"
                                       onClick={(e) => {
                                         if (res.isResource) {
-                                          e.preventDefault();
-                                          setPreviewFile(res.resource);
+                                          trackDownload(res.resource.id);
                                         }
                                       }}
-                                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200"
+                                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2"
                                     >
+                                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                      </svg>
                                       {res.name}
+                                      {res.resource?.downloadCount > 0 && (
+                                        <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
+                                      )}
                                     </a>
                                   ))}
                                 </div>
@@ -256,16 +269,21 @@ const Header: React.FC = () => {
                             <a
                               key={res.id || res.name}
                               href={res.href}
-                              target={res.href.startsWith('http') || res.href.startsWith('/') ? '_blank' : '_self'}
+                              target="_blank"
                               onClick={(e) => {
                                 if (res.isResource) {
-                                  e.preventDefault();
-                                  setPreviewFile(res.resource);
+                                  trackDownload(res.resource.id);
                                 }
                               }}
-                              className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700"
+                              className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2"
                             >
+                              <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                              </svg>
                               - {res.name}
+                              {res.resource?.downloadCount > 0 && (
+                                <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
+                              )}
                             </a>
                           ))}
                         </div>
@@ -302,15 +320,6 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {previewFile && (
-        <FilePreviewModal
-          isOpen={!!previewFile}
-          onClose={() => setPreviewFile(null)}
-          fileUrl={previewFile.fileUrl}
-          fileType={previewFile.fileType}
-          title={previewFile.title}
-        />
-      )}
     </header>
   );
 };

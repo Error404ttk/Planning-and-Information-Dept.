@@ -25,11 +25,26 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
     fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx|xls|xlsx/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
+        // Allowed file extensions
+        const allowedExtensions = /jpeg|jpg|png|gif|pdf|doc|docx|xls|xlsx/;
+        const extname = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
 
-        if (extname && mimetype) {
+        // Allowed mimetypes
+        const allowedMimetypes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif',
+            'application/pdf',
+            'application/msword', // .doc
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+            'application/vnd.ms-excel', // .xls
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
+        ];
+
+        const mimetypeAllowed = allowedMimetypes.includes(file.mimetype);
+
+        if (extname && mimetypeAllowed) {
             return cb(null, true);
         } else {
             cb(new Error('Error: File type not allowed!'));

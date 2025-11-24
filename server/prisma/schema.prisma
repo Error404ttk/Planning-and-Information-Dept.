@@ -39,11 +39,12 @@ model AuditLog {
 }
 
 model Resource {
-  id          String   @id @default(cuid())
-  title       String
-  category    String
-  subcategory String?
-  fileUrl     String
-  fileType    String
-  createdAt   DateTime @default(now())
+  id            String   @id @default(cuid())
+  title         String
+  category      String
+  subcategory   String?
+  fileUrl       String
+  fileType      String
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
 }

@@ -132,4 +132,23 @@ router.put('/:id', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), async (req
     }
 });
 
+// Public: Track download (increment count)
+router.post('/:id/download', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const resource = await prisma.resource.update({
+            where: { id },
+            data: {
+                downloadCount: {
+                    increment: 1
+                }
+            }
+        });
+        res.json({ success: true, downloadCount: resource.downloadCount });
+    } catch (error) {
+        console.error('Download tracking error:', error);
+        res.status(500).json({ error: 'Failed to track download' });
+    }
+});
+
 export default router;
