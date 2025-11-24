@@ -3,9 +3,8 @@ module.exports = {
         {
             name: 'saraphi-backend',
             cwd: './server',
-            script: 'ts-node',
-            args: 'src/index.ts',
-            interpreter: 'node',
+            script: 'npx',
+            args: 'ts-node src/index.ts',
             watch: ['src'],
             ignore_watch: ['node_modules', 'logs', 'uploads', '.git'],
             env: {
