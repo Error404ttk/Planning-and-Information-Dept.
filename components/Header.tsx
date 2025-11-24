@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
-import FilePreviewModal from './FilePreviewModal';
-import { Resource } from '../types';
 
 const Header: React.FC = () => {
   const { navLinks, resources } = useData();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [previewFile, setPreviewFile] = useState<Resource | null>(null);
 
   // Track download function
   const trackDownload = async (resourceId: string) => {
@@ -161,25 +158,25 @@ const Header: React.FC = () => {
                                 <div className="absolute left-full top-0 opacity-0 invisible group-hover/sub:visible group-hover/sub:opacity-100 transform-gpu translate-x-1 group-hover/sub:translate-x-0 transition-all duration-200 ease-out pl-1 top-[-4px]">
                                   <div className="bg-white shadow-lg rounded-md py-1 w-64 ring-1 ring-black ring-opacity-5">
                                     {sublink.submenu.map((res: any) => (
-                                      <button
+                                      <a
                                         key={res.id || res.name}
+                                        href={res.href}
+                                        download
                                         onClick={(e) => {
-                                          e.preventDefault();
                                           if (res.isResource) {
                                             trackDownload(res.resource.id);
-                                            setPreviewFile(res.resource);
                                           }
                                         }}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2"
                                       >
-                                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
                                         {res.name}
                                         {res.resource?.downloadCount > 0 && (
                                           <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
                                         )}
-                                      </button>
+                                      </a>
                                     ))}
                                   </div>
                                 </div>
@@ -269,26 +266,26 @@ const Header: React.FC = () => {
                           <div key={sublink.id || sublink.name} className="space-y-1">
                             <div className="text-gray-500 px-3 py-1 text-sm font-semibold">{sublink.name}</div>
                             {sublink.submenu.map((res: any) => (
-                              <button
+                              <a
                                 key={res.id || res.name}
+                                href={res.href}
+                                download
                                 onClick={(e) => {
-                                  e.preventDefault();
                                   if (res.isResource) {
                                     trackDownload(res.resource.id);
-                                    setPreviewFile(res.resource);
                                     setIsMenuOpen(false);
                                   }
                                 }}
-                                className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2"
                               >
-                                <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                <svg className="w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
                                 - {res.name}
                                 {res.resource?.downloadCount > 0 && (
                                   <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
                                 )}
-                              </button>
+                              </a>
                             ))}
                           </div>
                         ) : (
@@ -325,18 +322,6 @@ const Header: React.FC = () => {
         </div>
 
       </header>
-
-      {
-        previewFile && (
-          <FilePreviewModal
-            isOpen={!!previewFile}
-            onClose={() => setPreviewFile(null)}
-            fileUrl={previewFile.fileUrl}
-            fileType={previewFile.fileType}
-            title={previewFile.title}
-          />
-        )
-      }
     </>
   );
 };
