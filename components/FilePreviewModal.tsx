@@ -16,9 +16,12 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fi
     const isOffice = fileType.includes('word') ||
         fileType.includes('excel') ||
         fileType.includes('msword') ||
-        fileType.includes('spreadsheet');
+        fileType.includes('spreadsheet') ||
+        fileType.includes('presentation') ||
+        fileType.includes('powerpoint');
 
     // Get full URL for Google Docs Viewer
+    // If fileUrl is relative (starts with /), prepend origin
     const fullUrl = fileUrl.startsWith('http')
         ? fileUrl
         : `${window.location.origin}${fileUrl}`;
@@ -67,17 +70,17 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fi
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 overflow-hidden bg-gray-50">
+                    <div className="flex-1 overflow-hidden bg-gray-50 relative min-h-[600px]">
                         {isPdf && (
                             <iframe
                                 src={fileUrl}
-                                className="w-full h-full min-h-[600px]"
+                                className="w-full h-full absolute inset-0"
                                 title={title}
                             />
                         )}
 
                         {isImage && (
-                            <div className="flex items-center justify-center h-full p-4">
+                            <div className="flex items-center justify-center h-full p-4 absolute inset-0">
                                 <img
                                     src={fileUrl}
                                     alt={title}
@@ -89,13 +92,13 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fi
                         {isOffice && (
                             <iframe
                                 src={viewerUrl}
-                                className="w-full h-full min-h-[600px]"
+                                className="w-full h-full absolute inset-0"
                                 title={title}
                             />
                         )}
 
                         {!isPdf && !isImage && !isOffice && (
-                            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+                            <div className="flex flex-col items-center justify-center h-full p-8 text-center absolute inset-0">
                                 <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
