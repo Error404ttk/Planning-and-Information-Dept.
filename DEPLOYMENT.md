@@ -95,3 +95,78 @@ sudo certbot --nginx -d it.sarapeehospital.go.th
 ## Support
 
 For detailed instructions, see `deployment_guide.md` in the artifacts folder.
+
+---
+
+## Server Deployment Steps (After Git Pull)
+
+### ขั้นตอนการ Deploy บน Production Server
+
+เมื่อ pull code ใหม่จาก Git แล้ว ให้ทำตามขั้นตอนนี้เสมอ:
+
+#### 1. Backend Deployment
+
+```bash
+cd /home/Planning-and-Information-Dept./server
+
+# Install dependencies (if package.json changed)
+npm install
+
+# ⚠️ IMPORTANT: Generate Prisma Client
+npx prisma generate
+
+# Run database migrations (if schema changed)
+npx prisma migrate deploy
+
+# Build TypeScript
+npm run build
+
+# Restart backend
+pm2 restart saraphi-backend
+```
+
+#### 2. Frontend Deployment
+
+```bash
+cd /home/Planning-and-Information-Dept.
+
+# Install dependencies (if package.json changed)
+npm install
+
+# Build frontend
+npm run build
+
+# Restart frontend
+pm2 restart saraphi-frontend
+```
+
+### ⚠️ ปัญหาที่พบบ่อยและวิธีแก้
+
+#### Error: Property 'systemSetting' does not exist on PrismaClient
+
+**สาเหตุ:** ยังไม่ได้ run `npx prisma generate` หลังจากเพิ่ม/แก้ไข Prisma schema
+
+**วิธีแก้:**
+```bash
+cd server
+npx prisma generate
+npm run build
+pm2 restart saraphi-backend
+```
+
+#### Error: Cannot find module
+
+**สาเหตุ:** ไม่ได้ install dependencies
+
+**วิธีแก้:**
+```bash
+npm install
+cd server && npm install
+```
+
+### 📝 หมายเหตุสำคัญ
+
+- **ทุกครั้งที่ pull code ใหม่** ต้องรัน `npx prisma generate` เสมอ (หาก schema.prisma มีการเปลี่ยนแปลง)
+- **ห้าม commit ไฟล์ `.env`** - ถูก exclude ใน `.gitignore` แล้ว
+- **ห้าม commit folder `uploads`** - เป็น user-generated content
+- ควร backup database ก่อน run migration ทุกครั้ง
