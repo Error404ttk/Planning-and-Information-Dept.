@@ -135,14 +135,35 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fi
                         )}
 
                         {isPdf && (
-                            <embed
-                                src={`${fileUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-                                type="application/pdf"
-                                className="w-full h-full absolute inset-0 border-0"
-                                title={title}
-                                onLoad={handleIframeLoad}
-                                onError={handleIframeError}
-                            />
+                            <>
+                                <iframe
+                                    src={`${fileUrl}#view=FitH`}
+                                    className="w-full h-full absolute inset-0 border-0"
+                                    title={title}
+                                    onLoad={handleIframeLoad}
+                                    onError={() => {
+                                        console.error('PDF iframe failed to load');
+                                        handleIframeError();
+                                    }}
+                                />
+                                {viewerError && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                                        <div className="text-center p-8">
+                                            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            </svg>
+                                            <h4 className="text-lg font-semibold text-gray-900 mb-2">ไม่สามารถแสดงตัวอย่างได้</h4>
+                                            <p className="text-gray-600 mb-4">Browser ของคุณไม่รองรับการแสดง PDF</p>
+                                            <button
+                                                onClick={handleDownload}
+                                                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                                            >
+                                                ดาวน์โหลดไฟล์แทน
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
                         )}
 
                         {isImage && (
