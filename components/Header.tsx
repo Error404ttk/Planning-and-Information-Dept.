@@ -164,11 +164,15 @@ const Header: React.FC = () => {
                                       <button
                                         key={res.id || res.name}
                                         onClick={(e) => {
+                                          console.log('Resource button clicked!', res);
                                           e.preventDefault();
                                           e.stopPropagation();
                                           if (res.isResource) {
+                                            console.log('Setting preview file:', res.resource);
                                             trackDownload(res.resource.id);
                                             setPreviewFile(res.resource);
+                                          } else {
+                                            console.log('Not a resource!', res);
                                           }
                                         }}
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2 cursor-pointer border-0 bg-transparent"
