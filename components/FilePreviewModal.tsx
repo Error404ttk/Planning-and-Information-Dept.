@@ -128,42 +128,32 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fi
 
                     {/* Content */}
                     <div className="flex-1 overflow-hidden bg-gray-100 relative">
-                        {isLoading && !isImage && (
-                            <div className="absolute inset-0 flex items-center justify-center z-10 bg-white bg-opacity-50">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                            </div>
-                        )}
-
                         {isPdf && (
-                            <>
-                                <iframe
-                                    src={`${fileUrl}#view=FitH`}
-                                    className="w-full h-full absolute inset-0 border-0"
-                                    title={title}
-                                    onLoad={handleIframeLoad}
-                                    onError={() => {
-                                        console.error('PDF iframe failed to load');
-                                        handleIframeError();
-                                    }}
-                                />
-                                {viewerError && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                                        <div className="text-center p-8">
-                                            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                            </svg>
-                                            <h4 className="text-lg font-semibold text-gray-900 mb-2">ไม่สามารถแสดงตัวอย่างได้</h4>
-                                            <p className="text-gray-600 mb-4">Browser ของคุณไม่รองรับการแสดง PDF</p>
-                                            <button
-                                                onClick={handleDownload}
-                                                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                                            >
-                                                ดาวน์โหลดไฟล์แทน
-                                            </button>
-                                        </div>
+                            <div className="w-full h-full flex items-center justify-center bg-white p-8">
+                                <div className="text-center max-w-md">
+                                    <div className="bg-red-50 p-8 rounded-full inline-block mb-6">
+                                        <svg className="w-20 h-20 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
                                     </div>
-                                )}
-                            </>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
+                                    <p className="text-gray-600 mb-6">
+                                        คลิกปุ่มด้านล่างเพื่อดาวน์โหลดไฟล์ PDF
+                                    </p>
+                                    <button
+                                        onClick={handleDownload}
+                                        className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto"
+                                    >
+                                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        ดาวน์โหลดไฟล์
+                                    </button>
+                                    <p className="text-sm text-gray-500 mt-4">
+                                        ไฟล์: {fileUrl.split('/').pop()}
+                                    </p>
+                                </div>
+                            </div>
                         )}
 
                         {isImage && (
