@@ -26,9 +26,8 @@ if (missingEnvVars.length > 0) {
 const app = express();
 const PORT = process.env.PORT || 3007;
 
-// Trust proxy - required when behind Cloudflare
-// Set to 1 for Cloudflare only (1 proxy hop)
-app.set('trust proxy', 1);
+// Trust proxy - NOT required when not using Cloudflare/Proxy
+// app.set('trust proxy', 1);
 
 // Security headers
 app.use(helmet());
