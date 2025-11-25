@@ -134,6 +134,13 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fi
                             </div>
                         )}
 
+                        {/* Debug Info - Remove after fixing */}
+                        <div className="absolute top-0 left-0 bg-black bg-opacity-75 text-white p-2 text-xs z-50 max-w-md">
+                            <div>File: {fileUrl}</div>
+                            <div>Type: {fileType}</div>
+                            <div>isPdf: {String(isPdf)}, isImage: {String(isImage)}, isOffice: {String(isOffice)}</div>
+                        </div>
+
                         {isPdf && (
                             <iframe
                                 src={fileUrl}
