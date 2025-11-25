@@ -87,9 +87,23 @@ app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resources', resourceRoutes);
 
-app.get('/', (req, res) => {
-    res.send('Saraphi Hospital API');
+
+// Serve frontend static files (after building with 'npm run build')
+// This allows running without Apache - just PM2
+const frontendDistPath = path.join(__dirname, '../../dist');
+app.use(express.static(frontendDistPath));
+
+// SPA fallback - serve index.html for all non-API routes
+// This enables client-side routing to work properly
+app.get('*', (req, res) => {
+    // Don't serve index.html for API or uploads routes
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+        res.sendFile(path.join(frontendDistPath, 'index.html'));
+    } else {
+        res.status(404).json({ error: 'Not found' });
+    }
 });
+
 
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
