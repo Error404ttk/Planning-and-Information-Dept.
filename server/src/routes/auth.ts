@@ -22,7 +22,19 @@ router.post('/login', async (req, res) => {
         console.log(`[LOGIN DEBUG] User found: ${user.username}, Role: ${user.role}`);
 
         // Verify password
-        const isValid = await bcrypt.compare(password, user.password);
+        let isValid = false;
+        try {
+            isValid = await bcrypt.compare(password, user.password);
+        } catch (bcryptError) {
+            console.error(`[LOGIN ERROR] Bcrypt compare failed for user ${username}:`, bcryptError);
+            // Fallback for legacy plain text passwords (TEMPORARY - REMOVE IN PROD IF NOT NEEDED)
+            if (password === user.password) {
+                console.warn(`[LOGIN WARNING] User ${username} logged in with PLAIN TEXT password. Please reset password.`);
+                isValid = true;
+                // Optional: Auto-hash password here? No, let's keep it simple for now.
+            }
+        }
+
         if (!isValid) {
             console.log(`[LOGIN FAILED] Invalid password for user: ${username}`);
             return res.status(401).json({ error: 'Invalid credentials' });
