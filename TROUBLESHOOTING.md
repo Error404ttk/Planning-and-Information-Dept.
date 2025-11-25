@@ -137,7 +137,88 @@ Error: File type not allowed!
 
 ---
 
-### 6. Database Connection Error
+### 6. 500 Internal Server Error (Behind Reverse Proxy)
+
+**Symptoms**:
+```
+GET https://it.sarapeehospital.go.th/api/* 500 (Internal Server Error)
+```
+
+**Error in logs**:
+```
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false
+code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR'
+```
+
+**Cause**: Server behind Cloudflare + Apache/Nginx but Express not configured to trust proxy
+
+**Solution**:
+
+**Step 1: Fix Express Configuration** (Already done in code):
+```typescript
+// server/src/index.ts
+// Set to 2 for Cloudflare + Apache/Nginx (2 proxy hops)
+app.set('trust proxy', 2);
+```
+
+**Step 2: Configure Apache** (Must do on server):
+
+Edit `/etc/apache2/sites-available/it.sarapeehospital.go.th.conf`:
+
+```apache
+<VirtualHost *:80>
+    ServerName it.sarapeehospital.go.th
+    
+    # Uploads directory
+    Alias /uploads /home/Planning-and-Information-Dept./server/uploads
+    <Directory /home/Planning-and-Information-Dept./server/uploads>
+        Options -Indexes +FollowSymLinks
+        AllowOverride None
+        Require all granted
+        Header set Access-Control-Allow-Origin "*"
+    </Directory>
+    
+    # IMPORTANT: Proxy headers MUST be before ProxyPass
+    ProxyPreserveHost On
+    RequestHeader set X-Forwarded-For "%{REMOTE_ADDR}s"
+    RequestHeader set X-Forwarded-Proto "https"
+    
+    # Backend API
+    ProxyPass /api/ http://localhost:3007/api/
+    ProxyPassReverse /api/ http://localhost:3007/api/
+    
+    # Frontend
+    ProxyPass / http://192.168.99.221:5173/
+    ProxyPassReverse / http://192.168.99.221:5173/
+</VirtualHost>
+```
+
+**Step 3: Enable Required Apache Modules**:
+```bash
+a2enmod proxy proxy_http headers
+systemctl restart apache2
+```
+
+**Step 4: Verify**:
+```bash
+# Test from server
+curl http://localhost/api/auth/me
+curl https://it.sarapeehospital.go.th/api/auth/me
+
+# Check logs
+pm2 logs saraphi-backend --lines 10
+tail -n 20 /var/log/apache2/error.log
+```
+
+**Common Mistakes**:
+- ❌ Proxy headers placed **after** `</VirtualHost>` (ignored by Apache)
+- ❌ Proxy headers placed **after** `ProxyPass` directives (too late)
+- ❌ Proxy modules not enabled
+- ❌ Using `trust proxy: true` instead of specific number
+
+---
+
+### 7. Database Connection Error
 
 **Symptoms**:
 ```
