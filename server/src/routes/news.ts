@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
         const news = await prisma.newsArticle.findMany({ orderBy: { date: 'desc' } });
         res.json(news);
     } catch (error) {
+        console.error('Error fetching news:', error);
         res.status(500).json({ error: 'Failed to fetch news' });
     }
 });

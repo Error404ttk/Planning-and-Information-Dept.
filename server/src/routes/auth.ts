@@ -67,6 +67,7 @@ router.get('/me', async (req, res) => {
 
         res.json({ user: { id: user.id, username: user.username, name: user.name, role: user.role } });
     } catch (error) {
+        console.error('Auth check error:', error);
         res.json({ user: null });
     }
 });
