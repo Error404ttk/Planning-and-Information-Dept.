@@ -21,6 +21,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // --- Authentication State ---
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [mustChangePassword, setMustChangePassword] = useState<boolean>(false);
+  const [isRateLimited, setIsRateLimited] = useState<boolean>(false);
 
   // --- Data State ---
   const [users, setUsers] = useState<User[]>([]);
@@ -50,8 +51,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setCurrentUser(null);
         }
       } else if (res.status === 429) {
-        // Rate limited - ignore silently
+        // Rate limited - show notification
         console.log('Rate limited, skipping auth check');
+        setIsRateLimited(true);
+        // Auto-hide after 60 seconds
+        setTimeout(() => setIsRateLimited(false), 60000);
       }
     } catch (err) {
       // Silently fail - user not logged in is OK
@@ -380,6 +384,30 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       resources, addResource, updateResource, deleteResource,
       resetToDefaults
     }}>
+      {/* Rate Limit Notification */}
+      {isRateLimited && (
+        <div className="fixed top-0 left-0 right-0 bg-yellow-500 text-white px-4 py-3 z-[9999] shadow-lg">
+          <div className="container mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div>
+                <div className="font-semibold">กรุณารอสักครู่</div>
+                <div className="text-sm">ระบบกำลังประมวลผล กรุณารอประมาณ 1 นาที แล้วลองใหม่อีกครั้ง</div>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsRateLimited(false)}
+              className="text-white hover:text-gray-200 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
       {children}
     </DataContext.Provider>
   );
