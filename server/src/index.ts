@@ -49,6 +49,15 @@ const authLimiter = rateLimit({
 
 app.use('/api/', limiter);
 
+// Disable caching for all API responses
+app.use('/api/', (req, res, next) => {
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
+
+
 // CORS configuration from environment
 const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:5173'];
 app.use(cors({

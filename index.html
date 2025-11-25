@@ -1,42 +1,69 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Security: Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://aistudiocdn.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://picsum.photos https://fastly.picsum.photos; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://aistudiocdn.com https://cloudflareinsights.com; frame-src 'self' https://view.officeapps.live.com https://docs.google.com;">
-    
-    <title>งานแผนงานและสารสนเทศ - โรงพยาบาลสารภี</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      html {
-        scroll-behavior: smooth;
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Cache Control: Prevent caching for fresh content -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- Security: Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://aistudiocdn.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://picsum.photos https://fastly.picsum.photos; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://aistudiocdn.com https://cloudflareinsights.com; frame-src 'self' https://view.officeapps.live.com https://docs.google.com;">
+
+  <title>งานแผนงานและสารสนเทศ - โรงพยาบาลสารภี</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+    }
+
+    /* Custom Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
       }
-      body {
-        font-family: 'Sarabun', sans-serif;
+
+      to {
+        opacity: 1;
       }
-      
-      /* Custom Animations */
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
-      
-      @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
-      
-      @keyframes pulse-subtle {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+    }
+
+    @keyframes pulse-subtle {
+
+      0%,
+      100% {
+        transform: scale(1);
       }
-    </style>
+
+      50% {
+        transform: scale(1.05);
+      }
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -46,10 +73,12 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>
