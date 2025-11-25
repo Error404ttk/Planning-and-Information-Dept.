@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
         const resources = await prisma.resource.findMany({ orderBy: { createdAt: 'desc' } });
         res.json(resources);
     } catch (error) {
+        console.error('Error fetching resources:', error);
         res.status(500).json({ error: 'Failed to fetch resources' });
     }
 });
