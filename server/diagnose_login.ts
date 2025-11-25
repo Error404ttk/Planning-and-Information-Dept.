@@ -1,6 +1,10 @@
 
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const prisma = new PrismaClient();
 
@@ -29,21 +33,46 @@ async function main() {
         // 3. Test Password Verification
         console.log('\n3️⃣  Testing Password Verification...');
         const testPassword = 'password';
-        const isMatch = await bcrypt.compare(testPassword, admin.password);
+        let isMatch = false;
+        try {
+            isMatch = await bcrypt.compare(testPassword, admin.password);
+        } catch (err) {
+            console.error('❌ Bcrypt error:', err);
+        }
 
         if (isMatch) {
             console.log('✅ Password "password" matches the stored hash.');
-            console.log('   Login SHOULD work.');
         } else {
             console.error('❌ Password "password" does NOT match the stored hash.');
-            console.log('   This means the password in the DB is different.');
-
             // Test if it's plain text
             if (admin.password === testPassword) {
                 console.warn('⚠️  Stored password is PLAIN TEXT (not hashed).');
-                console.warn('   The login system expects a hash. Please run seed to fix.');
             }
         }
+
+        // 4. Test JWT Signing
+        console.log('\n4️⃣  Testing JWT Signing...');
+        const JWT_SECRET = process.env.JWT_SECRET;
+        console.log('   JWT_SECRET exists:', !!JWT_SECRET);
+        if (!JWT_SECRET) {
+            console.warn('⚠️  JWT_SECRET is missing in process.env! Using fallback.');
+        }
+
+        try {
+            const secret = JWT_SECRET || 'super-secret-key-change-in-prod';
+            const token = jwt.sign(
+                { userId: admin.id, username: admin.username, role: admin.role },
+                secret,
+                { expiresIn: '1d' }
+            );
+            console.log('✅ JWT Signing successful. Token length:', token.length);
+        } catch (jwtError) {
+            console.error('❌ JWT Signing FAILED:', jwtError);
+        }
+
+        console.log('\n✅ Diagnosis Complete. If all checks passed, the issue might be in PM2 environment or Network.');
+        console.log('👉 Please run "pm2 logs" to see the actual server error.');
+
 
     } catch (error) {
         console.error('\n❌ CRITICAL ERROR:', error);
