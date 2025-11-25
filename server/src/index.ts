@@ -88,7 +88,10 @@ app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes
-app.use('/api/auth', authLimiter, authRoutes);
+// Routes
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/logout', authLimiter);
+app.use('/api/auth', authRoutes); // Use general limiter for other auth routes (like /me)
 app.use('/api/news', newsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
