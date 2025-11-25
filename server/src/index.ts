@@ -95,14 +95,15 @@ app.use(express.static(frontendDistPath));
 
 // SPA fallback - serve index.html for all non-API routes
 // This enables client-side routing to work properly
-app.get('*', (req, res) => {
+app.use((req, res, next) => {
     // Don't serve index.html for API or uploads routes
     if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
         res.sendFile(path.join(frontendDistPath, 'index.html'));
     } else {
-        res.status(404).json({ error: 'Not found' });
+        next();
     }
 });
+
 
 
 app.listen(PORT, () => {
