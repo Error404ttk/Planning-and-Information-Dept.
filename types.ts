@@ -19,6 +19,14 @@ export interface AuditLog {
   timestamp: string;
 }
 
+export interface SlideImage {
+  id: string;
+  imageUrl: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface NavLink {
   id?: string;
   name: string;
@@ -87,8 +95,11 @@ export interface DataContextType {
   updateResource: (id: string, resource: Partial<Resource>) => Promise<void>;
   deleteResource: (id: string) => Promise<void>;
 
-  sliderImages: string[];
-  updateSliderImages: (images: string[]) => void;
+  // Slides
+  slides: SlideImage[];
+  addSlide: (imageUrl: string) => Promise<void>;
+  deleteSlide: (id: string) => Promise<void>;
+  updateSlide: (id: string, data: Partial<SlideImage>) => Promise<void>;
 
   resetToDefaults: () => void;
 }

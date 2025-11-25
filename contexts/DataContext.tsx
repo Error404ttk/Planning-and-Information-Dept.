@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { DataContextType, NavLink, GridItem, NewsArticle, User, AuditLog, Resource } from '../types';
+import { DataContextType, NavLink, GridItem, NewsArticle, User, AuditLog, Resource, SlideImage } from '../types';
 import {
   INITIAL_NAV_LINKS,
   INITIAL_GRID_ITEMS,
@@ -30,13 +30,16 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [gridItems, setGridItems] = useState<GridItem[]>(INITIAL_GRID_ITEMS);
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
-  const [sliderImages, setSliderImages] = useState<string[]>(INITIAL_SLIDER_IMAGES);
+  const [slides, setSlides] = useState<SlideImage[]>([]);
 
   // --- Initial Fetch ---
   useEffect(() => {
     checkAuth();
     fetchNews();
+    checkAuth();
+    fetchNews();
     fetchResources();
+    fetchSlides();
   }, []);
 
   const checkAuth = async () => {
@@ -209,7 +212,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateNavLinks = (links: NavLink[]) => setNavLinks(links);
   const updateGridItems = (items: GridItem[]) => setGridItems(items);
-  const updateSliderImages = (images: string[]) => setSliderImages(images);
+
 
   const addNews = async (news: NewsArticle) => {
     try {
@@ -360,6 +363,65 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // --- Slide Methods ---
+  const fetchSlides = async () => {
+    try {
+      const res = await fetch('/api/slides');
+      if (res.ok) {
+        const data = await res.json();
+        setSlides(data);
+      }
+    } catch (err) {
+      console.error("Fetch slides failed", err);
+    }
+  };
+
+  const addSlide = async (imageUrl: string) => {
+    try {
+      const res = await fetch('/api/slides', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl, order: slides.length })
+      });
+      if (res.ok) {
+        const newSlide = await res.json();
+        setSlides(prev => [...prev, newSlide]);
+      }
+    } catch (error) {
+      console.error("Add slide error", error);
+      throw error;
+    }
+  };
+
+  const deleteSlide = async (id: string) => {
+    try {
+      const res = await fetch(`/api/slides/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setSlides(prev => prev.filter(s => s.id !== id));
+      }
+    } catch (error) {
+      console.error("Delete slide error", error);
+      throw error;
+    }
+  };
+
+  const updateSlide = async (id: string, data: Partial<SlideImage>) => {
+    try {
+      const res = await fetch(`/api/slides/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        const updatedSlide = await res.json();
+        setSlides(prev => prev.map(s => s.id === id ? updatedSlide : s));
+      }
+    } catch (error) {
+      console.error("Update slide error", error);
+      throw error;
+    }
+  };
+
 
   const resetToDefaults = () => {
     alert("Reset to defaults is disabled in production mode.");
@@ -380,7 +442,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       navLinks, updateNavLinks,
       gridItems, updateGridItems,
       newsArticles, addNewsArticle: addNews, updateNewsArticle: updateNews, deleteNewsArticle: deleteNews, updateAllNews,
-      sliderImages, updateSliderImages,
+      slides, addSlide, deleteSlide, updateSlide,
       resources, addResource, updateResource, deleteResource,
       resetToDefaults
     }}>

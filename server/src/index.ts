@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth';
+import slideRoutes from './routes/slides';
 import newsRoutes from './routes/news';
 import userRoutes from './routes/users';
 import path from 'path';
@@ -86,6 +87,7 @@ app.use('/api/news', newsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resources', resourceRoutes);
+app.use('/api/slides', slideRoutes);
 
 
 // Serve frontend static files (after building with 'npm run build')

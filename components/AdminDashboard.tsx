@@ -241,7 +241,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
     newsArticles, addNews, updateNews, updateAllNews, deleteNews,
     navLinks, updateNavLinks,
     gridItems, updateGridItems,
-    sliderImages, updateSliderImages,
+    slides, addSlide, deleteSlide, updateSlide,
     users, addUser, updateUser, deleteUser,
     auditLogs,
     resources, addResource, updateResource, deleteResource,
@@ -622,15 +622,52 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
 
 
   // --- Slider Images State ---
-  const [newImageUrl, setNewImageUrl] = useState('');
-  const addSliderImage = () => {
-    if (newImageUrl) {
-      updateSliderImages([...sliderImages, newImageUrl]);
-      setNewImageUrl('');
+  const [isSlideUploading, setIsSlideUploading] = useState(false);
+  const handleSlideUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsSlideUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!uploadRes.ok) throw new Error('Upload failed');
+
+        const uploadData = await uploadRes.json();
+        await addSlide(uploadData.fileUrl);
+        MySwal.fire('อัพโหลดสำเร็จ', 'เพิ่มรูปสไลด์เรียบร้อยแล้ว', 'success');
+      } catch (error) {
+        console.error("Slide upload error", error);
+        MySwal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถอัพโหลดรูปได้', 'error');
+      } finally {
+        setIsSlideUploading(false);
+        // Reset input
+        e.target.value = '';
+      }
     }
   };
-  const removeSliderImage = (index: number) => {
-    updateSliderImages(sliderImages.filter((_, i) => i !== index));
+
+  const handleDeleteSlide = async (id: string) => {
+    const result = await MySwal.fire({
+      title: 'ยืนยันการลบ?',
+      text: "คุณต้องการลบรูปสไลด์นี้ใช่หรือไม่?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ใช่, ลบเลย!',
+      cancelButtonText: 'ยกเลิก'
+    });
+
+    if (result.isConfirmed) {
+      await deleteSlide(id);
+      MySwal.fire('ลบสำเร็จ!', 'รูปสไลด์ถูกลบเรียบร้อยแล้ว', 'success');
+    }
   };
 
   // --- Resources State ---
@@ -1080,34 +1117,59 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">จัดการรูปสไลด์หน้าแรก</h2>
-                <div className="flex gap-3">
-                  <input
-                    type="text"
-                    placeholder="วางลิงก์รูปภาพ (URL)"
-                    className="flex-1 border border-gray-200 bg-gray-50 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all focus:bg-white"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
-                  />
-                  <button onClick={addSliderImage} className="bg-green-600 text-white px-6 py-2.5 rounded-lg hover:bg-green-700 shadow-sm font-medium">เพิ่มรูป</button>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">อัพโหลดรูปภาพใหม่</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleSlideUpload}
+                        disabled={isSlideUploading}
+                        className="block w-full text-sm text-gray-500
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded-full file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-green-100 file:text-green-700
+                          hover:file:bg-green-200 cursor-pointer disabled:opacity-50"
+                      />
+                    </div>
+                    {isSlideUploading && (
+                      <div className="flex items-center gap-2 text-green-600">
+                        <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="text-sm font-medium">กำลังอัพโหลด...</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500">* แนะนำขนาดรูปภาพ 1920x600 px หรืออัตราส่วน 16:5 เพื่อความสวยงาม</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {sliderImages.map((url, idx) => (
-                  <div key={idx} className="group relative aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all">
-                    <img src={url} alt="Slide" className="w-full h-full object-cover" />
+                {slides.map((slide, idx) => (
+                  <div key={slide.id} className="group relative aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all">
+                    <img src={slide.imageUrl} alt={`Slide ${idx + 1}`} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
                     <button
-                      onClick={() => removeSliderImage(idx)}
+                      onClick={() => handleDeleteSlide(slide.id)}
                       className="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full shadow-lg hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100"
+                      title="ลบรูปภาพ"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                     <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      Slide {idx + 1}
+                      ลำดับที่ {slide.order + 1}
                     </div>
                   </div>
                 ))}
+                {slides.length === 0 && (
+                  <div className="col-span-full py-12 text-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-300">
+                    ยังไม่มีรูปสไลด์ในระบบ
+                  </div>
+                )}
               </div>
             </div>
           )}
