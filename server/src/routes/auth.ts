@@ -33,7 +33,14 @@ router.post('/login', async (req, res) => {
             }
         });
 
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        // Set secure cookie only if using HTTPS
+        // This allows login on http://192.168.x.x in production mode
+        const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: isSecure,
+            sameSite: isSecure ? 'none' : 'lax'
+        });
 
         // Check if user must change password
         if (user.mustChangePassword) {
