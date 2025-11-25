@@ -27,8 +27,8 @@ if (missingEnvVars.length > 0) {
 const app = express();
 const PORT = process.env.PORT || 3007;
 
-// Trust proxy - NOT required when not using Cloudflare/Proxy
-// app.set('trust proxy', 1);
+// Trust proxy - Required when behind Nginx/Cloudflare
+app.set('trust proxy', 1);
 
 // Security headers
 app.use(helmet());
@@ -65,7 +65,7 @@ app.use('/api/', (req, res, next) => {
 
 
 // CORS configuration from environment
-const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:5173'];
+const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:5173', 'https://it.sarapeehospital.go.th'];
 app.use(cors({
     origin: (origin, callback) => {
         // Allow requests with no origin (like mobile apps or curl requests)
