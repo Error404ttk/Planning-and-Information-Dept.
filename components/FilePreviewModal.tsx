@@ -9,6 +9,9 @@ interface FilePreviewModalProps {
 }
 
 const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onClose, fileUrl, fileType, title }) => {
+    // Debug: log what we receive
+    console.log('FilePreviewModal props:', { isOpen, fileUrl, fileType, title });
+
     if (!isOpen) return null;
 
     const [isLoading, setIsLoading] = useState(true);
