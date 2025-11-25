@@ -65,7 +65,11 @@ app.use('/api/', (req, res, next) => {
 
 
 // CORS configuration from environment
-const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:5173', 'https://it.sarapeehospital.go.th'];
+const envOrigins = process.env.CORS_ORIGIN?.split(',') || [];
+const defaultOrigins = ['http://localhost:5173', 'https://it.sarapeehospital.go.th'];
+const allowedOrigins = [...new Set([...envOrigins, ...defaultOrigins])];
+
+console.log('✅ Allowed CORS Origins:', allowedOrigins);
 app.use(cors({
     origin: (origin, callback) => {
         // Allow requests with no origin (like mobile apps or curl requests)
