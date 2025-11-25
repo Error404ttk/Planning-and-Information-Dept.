@@ -150,13 +150,13 @@ const Header: React.FC = () => {
                           {link.submenu.map((sublink) => (
                             sublink.submenu && sublink.submenu.length > 0 ? (
                               <div key={sublink.id || sublink.name} className="relative group/sub">
-                                <a
-                                  href={sublink.href}
-                                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition-colors duration-200 flex items-center justify-between"
+                                <button
+                                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition-colors duration-200 flex items-center justify-between border-0 bg-transparent cursor-pointer"
+                                  onClick={(e) => e.preventDefault()}
                                 >
                                   <span>{sublink.name}</span>
                                   <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
-                                </a>
+                                </button>
                                 {/* 3rd Level Dropdown */}
                                 <div className="absolute left-full top-0 opacity-0 invisible group-hover/sub:visible group-hover/sub:opacity-100 transform-gpu translate-x-1 group-hover/sub:translate-x-0 transition-all duration-200 ease-out pl-1 top-[-4px]">
                                   <div className="bg-white shadow-lg rounded-md py-1 w-64 ring-1 ring-black ring-opacity-5">
@@ -165,6 +165,7 @@ const Header: React.FC = () => {
                                         key={res.id || res.name}
                                         onClick={(e) => {
                                           e.preventDefault();
+                                          e.stopPropagation();
                                           if (res.isResource) {
                                             trackDownload(res.resource.id);
                                             setPreviewFile(res.resource);
@@ -273,6 +274,7 @@ const Header: React.FC = () => {
                                 key={res.id || res.name}
                                 onClick={(e) => {
                                   e.preventDefault();
+                                  e.stopPropagation();
                                   if (res.isResource) {
                                     trackDownload(res.resource.id);
                                     setPreviewFile(res.resource);
