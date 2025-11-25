@@ -61,17 +61,23 @@ export interface Resource {
   createdAt: string;
 }
 
+export interface SystemSettings {
+  hospitalLogo?: string;
+  [key: string]: string | undefined;
+}
+
 export interface DataContextType {
   // Auth & Users
   currentUser: User | null;
   mustChangePassword: boolean;
+  isRateLimited: boolean;
   users: User[];
-  login: (username: string, password: string) => Promise<boolean>; // Async for hashing
+  login: (password: string) => Promise<boolean>;
   logout: () => void;
   changePassword: (newPassword: string, currentPassword?: string) => Promise<{ success: boolean; error?: string }>;
-  addUser: (user: User) => Promise<void>; // Async for hashing
-  updateUser: (user: User) => Promise<void>; // Async for hashing
-  deleteUser: (id: string) => void;
+  addUser: (user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  updateUser: (id: string, updates: Partial<User>) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
 
   // Logs
   auditLogs: AuditLog[];
@@ -84,22 +90,28 @@ export interface DataContextType {
   updateGridItems: (items: GridItem[]) => void;
 
   newsArticles: NewsArticle[];
-  addNews: (news: NewsArticle) => void;
-  updateNews: (news: NewsArticle) => void;
+  addNews: (news: FormData) => Promise<void>;
+  updateNews: (id: string, news: FormData) => Promise<void>;
   updateAllNews: (news: NewsArticle[]) => void;
-  deleteNews: (id: string) => void;
+  deleteNews: (id: string) => Promise<void>;
 
   // Resources
   resources: Resource[];
-  addResource: (resource: Omit<Resource, 'id' | 'createdAt'>) => Promise<void>;
+  addResource: (resource: FormData) => Promise<void>;
   updateResource: (id: string, resource: Partial<Resource>) => Promise<void>;
   deleteResource: (id: string) => Promise<void>;
 
   // Slides
   slides: SlideImage[];
-  addSlide: (imageUrl: string) => Promise<void>;
+  addSlide: (slide: FormData) => Promise<void>;
   deleteSlide: (id: string) => Promise<void>;
   updateSlide: (id: string, data: Partial<SlideImage>) => Promise<void>;
+  updateSlideOrder: (id: string, newOrder: number) => Promise<void>;
+  toggleSlideActive: (id: string) => Promise<void>;
+
+  // Settings
+  settings: SystemSettings;
+  updateLogo: (file: File) => Promise<void>;
 
   resetToDefaults: () => void;
 }

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { DataContextType, NavLink, GridItem, NewsArticle, User, AuditLog, Resource, SlideImage } from '../types';
+import { DataContextType, NavLink, GridItem, NewsArticle, User, AuditLog, Resource, SlideImage, SystemSettings } from '../types';
 import {
   INITIAL_NAV_LINKS,
   INITIAL_GRID_ITEMS,
@@ -31,6 +31,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
   const [slides, setSlides] = useState<SlideImage[]>([]);
+  const [settings, setSettings] = useState<SystemSettings>({});
 
   // --- Initial Fetch ---
   useEffect(() => {
@@ -38,30 +39,75 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchNews();
     fetchResources();
     fetchSlides();
+    fetchSettings();
   }, []);
 
-  const checkAuth = async () => {
+  const fetchSettings = async () => {
     try {
-      const res = await fetch('/api/auth/me');
+      const res = await fetch('/api/settings');
       if (res.ok) {
         const data = await res.json();
-        if (data.user) {
-          setCurrentUser(data.user);
-          if (data.user.role === 'SUPER_ADMIN') fetchUsers();
-        } else {
-          setCurrentUser(null);
-        }
-      } else if (res.status === 429) {
-        // Rate limited - show notification
-        console.log('Rate limited, skipping auth check');
-        setIsRateLimited(true);
-        // Auto-hide after 60 seconds
-        setTimeout(() => setIsRateLimited(false), 60000);
+        setSettings(data);
       }
-    } catch (err) {
-      // Silently fail - user not logged in is OK
+    } catch (error) {
+      console.error('Error fetching settings:', error);
     }
   };
+
+  const updateLogo = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('logo', file);
+
+      const res = await fetch('/api/settings/logo', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setSettings(prev => ({ ...prev, hospitalLogo: data.logoUrl }));
+        // Also refresh settings to be sure
+        fetchSettings();
+      } else {
+        throw new Error('Failed to upload logo');
+      }
+    } catch (error) {
+      console.error('Error updating logo:', error);
+      throw error;
+    }
+  };
+
+  // ... (rest of existing functions)
+
+  const updateSlideOrder = async (id: string, newOrder: number) => {
+    // Not implemented in API yet, but we can update local state
+    setSlides(prev => {
+      const newSlides = [...prev];
+      const index = newSlides.findIndex(s => s.id === id);
+      if (index !== -1) {
+        newSlides[index].order = newOrder;
+        // Sort by order
+        return newSlides.sort((a, b) => a.order - b.order);
+      }
+      return prev;
+    });
+  };
+
+  const toggleSlideActive = async (id: string) => {
+    try {
+      const slide = slides.find(s => s.id === id);
+      if (slide) {
+        await updateSlide(id, { isActive: !slide.isActive });
+      }
+    } catch (error) {
+      console.error("Toggle slide active error", error);
+    }
+  };
+
+
+
+
 
   const fetchNews = async () => {
     try {
@@ -125,6 +171,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error("Login error", error);
       return false;
+    }
+  };
+
+  const checkAuth = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setCurrentUser(null);
+      setMustChangePassword(false);
+      setUsers([]); // Clear sensitive data
+    } catch (error) {
+      console.error("Check auth error", error);
     }
   };
 
@@ -425,25 +482,45 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     alert("Reset to defaults is disabled in production mode.");
   };
 
+  const value = {
+    currentUser,
+    mustChangePassword,
+    isRateLimited,
+    users,
+    auditLogs,
+    navLinks,
+    updateNavLinks,
+    gridItems,
+    updateGridItems,
+    newsArticles,
+    resources,
+    slides,
+    settings,
+    login,
+    logout,
+    changePassword,
+    addUser,
+    updateUser,
+    deleteUser,
+    addNews,
+    updateNews,
+    updateAllNews,
+    deleteNews,
+    addResource,
+    updateResource,
+    deleteResource,
+    addSlide,
+    updateSlideOrder,
+    toggleSlideActive,
+    updateSlide,
+    deleteSlide,
+    updateLogo,
+    resetToDefaults,
+    checkAuth,
+  };
+
   return (
-    <DataContext.Provider value={{
-      currentUser,
-      mustChangePassword,
-      users,
-      login,
-      logout,
-      changePassword,
-      addUser,
-      updateUser,
-      deleteUser,
-      auditLogs,
-      navLinks, updateNavLinks,
-      gridItems, updateGridItems,
-      newsArticles, addNewsArticle: addNews, updateNewsArticle: updateNews, deleteNewsArticle: deleteNews, updateAllNews,
-      slides, addSlide, deleteSlide, updateSlide,
-      resources, addResource, updateResource, deleteResource,
-      resetToDefaults
-    }}>
+    <DataContext.Provider value={value}>
       {/* Rate Limit Notification */}
       {isRateLimited && (
         <div className="fixed top-0 left-0 right-0 bg-yellow-500 text-white px-4 py-3 z-[9999] shadow-lg">

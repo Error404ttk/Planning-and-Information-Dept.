@@ -11,6 +11,8 @@ import userRoutes from './routes/users';
 import path from 'path';
 import uploadRoutes from './routes/upload';
 import resourceRoutes from './routes/resources';
+// Settings routes
+import settingsRoutes from './routes/settings';
 
 dotenv.config();
 
@@ -101,6 +103,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/slides', slideRoutes);
+app.use('/api/settings', settingsRoutes);
 
 
 // Serve frontend static files (after building with 'npm run build')

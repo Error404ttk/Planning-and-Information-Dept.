@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useData } from '../contexts/DataContext';
 import { ICONS } from '../constants';
 import { NewsArticle, GridItem, NavLink, User, Role } from '../types';
+import Settings from './Settings';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -214,7 +215,7 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
         <button
           type="submit"
           disabled={isUploading}
-          className={`mt-2 bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition shadow-sm flex items-center justify-center gap-2 flex-1 ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`mt-2 bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover: bg-green-700 transition shadow-sm flex items-center justify-center gap-2 flex-1 ${isUploading ? 'opacity-70 cursor-not-allowed' : ''} `}
         >
           {isUploading ? 'กำลังบันทึก...' : (initialData ? 'บันทึกการแก้ไข' : 'อัพโหลดไฟล์')}
         </button>
@@ -711,7 +712,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
           <div>
             <h1 className="text-xl font-bold text-gray-800 leading-tight">ระบบจัดการเว็บไซต์</h1>
             <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${currentUser.role === 'SUPER_ADMIN' ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
+              <div className={`w-2 h-2 rounded-full ${currentUser.role === 'SUPER_ADMIN' ? 'bg-purple-500' : 'bg-blue-500'} `}></div>
               <span className="text-xs text-gray-500 font-medium">{currentUser.name} ({currentUser.role})</span>
             </div>
           </div>
@@ -739,7 +740,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                 { id: 'menu', label: 'จัดการเมนู (Nav)', icon: 'M4 6h16M4 12h16M4 18h16' },
                 { id: 'services', label: 'จัดการบริการ (Icons)', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
                 { id: 'images', label: 'จัดการรูปสไลด์', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
-                { id: 'resources', label: 'จัดการเอกสาร/ไฟล์', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' }
+                { id: 'resources', label: 'จัดการเอกสาร/ไฟล์', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+                { id: 'settings', label: 'ตั้งค่าระบบ', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.356a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.356 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.356a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z' }
               ].map(item => (
                 <button
                   key={item.id}
@@ -747,7 +749,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                   className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center gap-3 group relative overflow-hidden ${activeTab === item.id
                     ? 'bg-green-50 text-green-700 font-semibold shadow-sm ring-1 ring-green-200'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
+                    } `}
                 >
                   {activeTab === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-green-500 rounded-r-full"></div>}
                   <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} /></svg>
@@ -771,7 +773,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                       className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center gap-3 group relative overflow-hidden ${activeTab === item.id
                         ? 'bg-purple-50 text-purple-700 font-semibold shadow-sm ring-1 ring-purple-200'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                        }`}
+                        } `}
                     >
                       {activeTab === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-purple-500 rounded-r-full"></div>}
                       <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} /></svg>
@@ -822,8 +824,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, 'news', index)}
                     onDragEnd={handleDragEnd}
-                    className={`bg-white border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row gap-5 items-start hover:shadow-md transition-all relative group ${draggedItem?.type === 'news' && draggedItem?.index === index ? 'opacity-50 border-dashed border-green-500 scale-[0.99]' : ''
-                      }`}
+                    className={`bg-white border border-gray-200 rounded-xl p-4 flex flex-col sm: flex-row gap-5 items-start hover: shadow-md transition-all relative group ${draggedItem?.type === 'news' && draggedItem?.index === index ? 'opacity-50 border-dashed border-green-500 scale-[0.99]' : ''
+                      } `}
                   >
                     {!searchTerm && (
                       <div className="absolute left-0 top-0 bottom-0 w-6 cursor-move flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -877,7 +879,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                     onDrop={(e) => handleDrop(e, 'menu', index)}
                     onDragEnd={handleDragEnd}
                     className={`bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm transition-all duration-200 group ${draggedItem?.type === 'menu' && draggedItem?.index === index ? 'opacity-40 ring-2 ring-green-500 border-transparent' : 'hover:shadow-md hover:border-green-200'
-                      }`}
+                      } `}
                   >
                     {/* Parent Item Header */}
                     <div className="flex items-center p-4 bg-white">
@@ -945,8 +947,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                             onDragOver={(e) => handleDragOver(e, subIndex)}
                             onDrop={(e) => { e.stopPropagation(); handleDrop(e, 'submenu', subIndex, link.id); }}
                             onDragEnd={handleDragEnd}
-                            className={`ml-10 pl-3 pr-3 py-2.5 bg-white border border-gray-200 rounded-lg flex items-center justify-between hover:border-green-300 hover:shadow-sm transition-all cursor-move relative group/sub ${draggedItem?.type === 'submenu' && draggedItem?.index === subIndex && draggedItem?.parentId === link.id ? 'opacity-40' : ''
-                              }`}
+                            className={`ml-10 pl-3 pr-3 py-2.5 bg-white border border-gray-200 rounded-lg flex items-center justify-between hover: border-green-300 hover: shadow-sm transition-all cursor-move relative group / sub ${draggedItem?.type === 'submenu' && draggedItem?.index === subIndex && draggedItem?.parentId === link.id ? 'opacity-40' : ''
+                              } `}
                           >
                             {/* Connector dot */}
                             <div className="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-px bg-gray-300"></div>
@@ -1018,8 +1020,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, 'service', index)}
                     onDragEnd={handleDragEnd}
-                    className={`bg-white border border-gray-200 p-4 rounded-xl flex items-center justify-between hover:shadow-md transition-all cursor-move group ${draggedItem?.type === 'service' && draggedItem?.index === index ? 'opacity-50 border-dashed border-green-500 scale-95' : ''
-                      }`}
+                    className={`bg-white border border-gray-200 p-4 rounded-xl flex items-center justify-between hover: shadow-md transition-all cursor-move group ${draggedItem?.type === 'service' && draggedItem?.index === index ? 'opacity-50 border-dashed border-green-500 scale-95' : ''
+                      } `}
                   >
                     <div className="flex items-center gap-4">
                       {!searchTerm && (
@@ -1034,554 +1036,577 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                         <span className="font-bold text-gray-800">{item.label}</span>
                         <span className="text-xs text-gray-400 truncate max-w-[120px]">{item.href}</span>
                         ```
-                      </div>
-                    </div>
+                      </div >
+                    </div >
                     <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <button onClick={() => openServiceModal(item)} className="text-gray-400 hover:text-blue-600 p-1.5 rounded-md hover:bg-blue-50 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg></button>
                       <button onClick={() => confirmDelete('service', item.id!)} className="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                     </div>
-                  </div>
+                  </div >
                 ))}
-              </div>
-            </div>
+              </div >
+            </div >
           )}
           {/* --- RESOURCES TAB --- */}
-          {activeTab === 'resources' && (
-            <div className="space-y-6">
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">
-                  {editingResource ? 'แก้ไขเอกสาร/ไฟล์' : 'อัพโหลดเอกสารและไฟล์'}
-                </h2>
-                <ResourceUploadForm
-                  onUpload={addResource}
-                  onUpdate={updateResource}
-                  initialData={editingResource}
-                  onCancelEdit={() => setEditingResource(null)}
-                  navLinks={navLinks}
-                />
-              </div>
-
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-200 bg-gray-50">
-                  <h3 className="font-bold text-gray-700">รายการไฟล์ในระบบ</h3>
+          {
+            activeTab === 'resources' && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">
+                    {editingResource ? 'แก้ไขเอกสาร/ไฟล์' : 'อัพโหลดเอกสารและไฟล์'}
+                  </h2>
+                  <ResourceUploadForm
+                    onUpload={addResource}
+                    onUpdate={updateResource}
+                    initialData={editingResource}
+                    onCancelEdit={() => setEditingResource(null)}
+                    navLinks={navLinks}
+                  />
                 </div>
-                <div className="divide-y divide-gray-100">
-                  {resources.length === 0 ? (
-                    <div className="p-8 text-center text-gray-500">ยังไม่มีไฟล์ในระบบ</div>
-                  ) : (
-                    resources.map(resource => (
-                      <div key={resource.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <a href={resource.fileUrl} target="_blank" rel="noreferrer" className="font-medium text-gray-900 hover:text-blue-600 transition-colors">
-                              {resource.title}
-                            </a>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">{resource.category}</span>
-                              {resource.subcategory && (
-                                <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">{resource.subcategory}</span>
-                              )}
-                              <span className="text-xs text-gray-400">{new Date(resource.createdAt).toLocaleDateString('th-TH')}</span>
+
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="p-4 border-b border-gray-200 bg-gray-50">
+                    <h3 className="font-bold text-gray-700">รายการไฟล์ในระบบ</h3>
+                  </div>
+                  <div className="divide-y divide-gray-100">
+                    {resources.length === 0 ? (
+                      <div className="p-8 text-center text-gray-500">ยังไม่มีไฟล์ในระบบ</div>
+                    ) : (
+                      resources.map(resource => (
+                        <div key={resource.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
+                              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                            </div>
+                            <div>
+                              <a href={resource.fileUrl} target="_blank" rel="noreferrer" className="font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                                {resource.title}
+                              </a>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">{resource.category}</span>
+                                {resource.subcategory && (
+                                  <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">{resource.subcategory}</span>
+                                )}
+                                <span className="text-xs text-gray-400">{new Date(resource.createdAt).toLocaleDateString('th-TH')}</span>
+                              </div>
                             </div>
                           </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleEditResource(resource)}
+                              className="text-sm text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded hover:bg-indigo-50 transition-colors"
+                            >
+                              แก้ไข
+                            </button>
+                            <button
+                              onClick={() => handleDeleteResource(resource.id)}
+                              className="text-sm text-red-600 hover:text-red-900 px-3 py-1 rounded hover:bg-red-50 transition-colors"
+                            >
+                              ลบ
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleEditResource(resource)}
-                            className="text-sm text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded hover:bg-indigo-50 transition-colors"
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            onClick={() => handleDeleteResource(resource.id)}
-                            className="text-sm text-red-600 hover:text-red-900 px-3 py-1 rounded hover:bg-red-50 transition-colors"
-                          >
-                            ลบ
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  )}
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
           {/* --- IMAGES TAB --- */}
-          {activeTab === 'images' && (
-            <div className="space-y-6">
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">จัดการรูปสไลด์หน้าแรก</h2>
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">อัพโหลดรูปภาพใหม่</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleSlideUpload}
-                        disabled={isSlideUploading}
-                        className="block w-full text-sm text-gray-500
+          {
+            activeTab === 'images' && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">จัดการรูปสไลด์หน้าแรก</h2>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+                      <div className="flex-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">อัพโหลดรูปภาพใหม่</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleSlideUpload}
+                          disabled={isSlideUploading}
+                          className="block w-full text-sm text-gray-500
                           file:mr-4 file:py-2 file:px-4
                           file:rounded-full file:border-0
                           file:text-sm file:font-semibold
                           file:bg-green-100 file:text-green-700
                           hover:file:bg-green-200 cursor-pointer disabled:opacity-50"
-                      />
-                    </div>
-                    {isSlideUploading && (
-                      <div className="flex items-center gap-2 text-green-600">
-                        <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span className="text-sm font-medium">กำลังอัพโหลด...</span>
+                        />
                       </div>
-                    )}
+                      {isSlideUploading && (
+                        <div className="flex items-center gap-2 text-green-600">
+                          <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span className="text-sm font-medium">กำลังอัพโหลด...</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500">* แนะนำขนาดรูปภาพ 1920x600 px หรืออัตราส่วน 16:5 เพื่อความสวยงาม</p>
                   </div>
-                  <p className="text-xs text-gray-500">* แนะนำขนาดรูปภาพ 1920x600 px หรืออัตราส่วน 16:5 เพื่อความสวยงาม</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {slides.map((slide, idx) => (
+                    <div key={slide.id} className="group relative aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all">
+                      <img src={slide.imageUrl} alt={`Slide ${idx + 1}`} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
+                      <button
+                        onClick={() => handleDeleteSlide(slide.id)}
+                        className="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full shadow-lg hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100"
+                        title="ลบรูปภาพ"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                      <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                        ลำดับที่ {slide.order + 1}
+                      </div>
+                    </div>
+                  ))}
+                  {slides.length === 0 && (
+                    <div className="col-span-full py-12 text-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-300">
+                      ยังไม่มีรูปสไลด์ในระบบ
+                    </div>
+                  )}
                 </div>
               </div>
+            )
+          }
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {slides.map((slide, idx) => (
-                  <div key={slide.id} className="group relative aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all">
-                    <img src={slide.imageUrl} alt={`Slide ${idx + 1}`} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
-                    <button
-                      onClick={() => handleDeleteSlide(slide.id)}
-                      className="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full shadow-lg hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100"
-                      title="ลบรูปภาพ"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
-                    <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      ลำดับที่ {slide.order + 1}
-                    </div>
-                  </div>
-                ))}
-                {slides.length === 0 && (
-                  <div className="col-span-full py-12 text-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-300">
-                    ยังไม่มีรูปสไลด์ในระบบ
-                  </div>
-                )}
-              </div>
-            </div>
+          {/* --- SETTINGS TAB --- */}
+          {activeTab === 'settings' && (
+            <Settings />
           )}
 
           {/* --- USERS TAB (Super Admin Only) --- */}
-          {activeTab === 'users' && isSuperAdmin && (
-            <div className="space-y-6">
-              <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800">จัดการผู้ใช้งาน</h2>
-                  <p className="text-sm text-gray-500">User Management & Role Based Access</p>
+          {
+            activeTab === 'users' && isSuperAdmin && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800">จัดการผู้ใช้งาน</h2>
+                    <p className="text-sm text-gray-500">User Management & Role Based Access</p>
+                  </div>
+                  <button
+                    onClick={() => openUserModal(null)}
+                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2 shadow-sm transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+                    เพิ่มผู้ใช้ใหม่
+                  </button>
                 </div>
-                <button
-                  onClick={() => openUserModal(null)}
-                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2 shadow-sm transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
-                  เพิ่มผู้ใช้ใหม่
-                </button>
-              </div>
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Username</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ชื่อ-นามสกุล</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
-                      <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {users.map((user) => (
-                      <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.username}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.name}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${user.role === 'SUPER_ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
-                            {user.role.replace('_', ' ')}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                          <div className="flex justify-end gap-3">
-                            <button
-                              onClick={() => openUserModal(user)}
-                              className="text-blue-600 hover:text-blue-900 transition-colors"
-                            >
-                              แก้ไข
-                            </button>
-                            {user.id !== currentUser.id && (
-                              <button
-                                onClick={() => confirmDelete('user', user.id)}
-                                className="text-red-600 hover:text-red-900 transition-colors"
-                              >
-                                ลบ
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* --- AUDIT LOGS TAB (Super Admin Only) --- */}
-          {activeTab === 'logs' && isSuperAdmin && (
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800">Audit Logs</h2>
-                  <p className="text-sm text-gray-500">ประวัติการใช้งานระบบ</p>
-                </div>
-                <input
-                  type="text"
-                  placeholder="ค้นหา (ผู้ใช้, กิจกรรม, รายละเอียด)..."
-                  className="border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm w-full sm:w-80 focus:ring-2 focus:ring-green-500 outline-none transition-all focus:bg-white"
-                  value={logFilter}
-                  onChange={(e) => setLogFilter(e.target.value)}
-                />
-              </div>
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col h-[600px]">
-                <div className="overflow-auto flex-1 rounded-xl">
-                  <table className="min-w-full divide-y divide-gray-200 relative">
-                    <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Timestamp</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">User</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Action</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Entity</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Details</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Username</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ชื่อ-นามสกุล</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                        <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredLogs.map((log) => (
-                        <tr key={log.id} className="hover:bg-gray-50 transition-colors text-sm">
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-500">{log.timestamp}</td>
-                          <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{log.performedBy}</td>
+                      {users.map((user) => (
+                        <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.username}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.name}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2.5 py-0.5 text-xs rounded-full border ${log.action === 'CREATE' ? 'bg-green-50 border-green-200 text-green-700' :
-                              log.action === 'DELETE' ? 'bg-red-50 border-red-200 text-red-700' :
-                                log.action === 'UPDATE' ? 'bg-blue-50 border-blue-200 text-blue-700' :
-                                  'bg-gray-50 border-gray-200 text-gray-700'
-                              }`}>
-                              {log.action}
+                            <span className={`px-3 py-1 text-xs font-semibold rounded-full ${user.role === 'SUPER_ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+                              {user.role.replace('_', ' ')}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                            <span className="px-2 py-0.5 bg-gray-100 rounded text-xs font-mono text-gray-700">{log.entity}</span>
+                          <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
+                            <div className="flex justify-end gap-3">
+                              <button
+                                onClick={() => openUserModal(user)}
+                                className="text-blue-600 hover:text-blue-900 transition-colors"
+                              >
+                                แก้ไข
+                              </button>
+                              {user.id !== currentUser.id && (
+                                <button
+                                  onClick={() => confirmDelete('user', user.id)}
+                                  className="text-red-600 hover:text-red-900 transition-colors"
+                                >
+                                  ลบ
+                                </button>
+                              )}
+                            </div>
                           </td>
-                          <td className="px-6 py-4 text-gray-600 max-w-xs truncate" title={log.details}>{log.details}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  {filteredLogs.length === 0 && <div className="p-12 text-center text-gray-500">ไม่พบข้อมูลประวัติการใช้งาน</div>}
                 </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
-        </div>
-      </div>
+          {/* --- AUDIT LOGS TAB (Super Admin Only) --- */}
+          {
+            activeTab === 'logs' && isSuperAdmin && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800">Audit Logs</h2>
+                    <p className="text-sm text-gray-500">ประวัติการใช้งานระบบ</p>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="ค้นหา (ผู้ใช้, กิจกรรม, รายละเอียด)..."
+                    className="border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm w-full sm:w-80 focus:ring-2 focus:ring-green-500 outline-none transition-all focus:bg-white"
+                    value={logFilter}
+                    onChange={(e) => setLogFilter(e.target.value)}
+                  />
+                </div>
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col h-[600px]">
+                  <div className="overflow-auto flex-1 rounded-xl">
+                    <table className="min-w-full divide-y divide-gray-200 relative">
+                      <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Timestamp</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">User</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Action</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Entity</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">Details</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {filteredLogs.map((log) => (
+                          <tr key={log.id} className="hover:bg-gray-50 transition-colors text-sm">
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-500">{log.timestamp}</td>
+                            <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{log.performedBy}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2.5 py-0.5 text-xs rounded-full border ${log.action === 'CREATE' ? 'bg-green-50 border-green-200 text-green-700' :
+                                log.action === 'DELETE' ? 'bg-red-50 border-red-200 text-red-700' :
+                                  log.action === 'UPDATE' ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                                    'bg-gray-50 border-gray-200 text-gray-700'
+                                }`}>
+                                {log.action}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                              <span className="px-2 py-0.5 bg-gray-100 rounded text-xs font-mono text-gray-700">{log.entity}</span>
+                            </td>
+                            <td className="px-6 py-4 text-gray-600 max-w-xs truncate" title={log.details}>{log.details}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {filteredLogs.length === 0 && <div className="p-12 text-center text-gray-500">ไม่พบข้อมูลประวัติการใช้งาน</div>}
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+        </div >
+      </div >
 
       {/* --- MODALS --- */}
 
       {/* User Modal */}
-      {isUserModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70] p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl transform transition-all">
-            <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">{editingUser ? 'แก้ไขผู้ใช้งาน' : 'เพิ่มผู้ใช้งานใหม่'}</h3>
-            <form onSubmit={handleUserSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">Username</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none disabled:bg-gray-100"
-                  value={userForm.username}
-                  onChange={e => setUserForm({ ...userForm, username: e.target.value })}
-                  disabled={!!editingUser}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">Password</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
-                  value={userForm.password}
-                  onChange={e => setUserForm({ ...userForm, password: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อ - นามสกุล</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
-                  value={userForm.name}
-                  onChange={e => setUserForm({ ...userForm, name: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">สิทธิ์การใช้งาน (Role)</label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 disabled:bg-gray-100 disabled:text-gray-500 outline-none focus:ring-2 focus:ring-purple-500"
-                  value={userForm.role}
-                  onChange={(e) => setUserForm({ ...userForm, role: e.target.value as Role })}
-                  disabled={editingUser?.id === currentUser.id}
-                >
-                  <option value="ADMIN">Admin (จัดการเนื้อหา)</option>
-                  <option value="SUPER_ADMIN">Super Admin (จัดการทุกอย่าง)</option>
-                </select>
-                {editingUser?.id === currentUser.id && (
-                  <p className="text-xs text-amber-600 mt-1">คุณไม่สามารถเปลี่ยนสิทธิ์การใช้งานของตัวเองได้</p>
-                )}
-              </div>
-              <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
-                <button type="button" onClick={() => setIsUserModalOpen(false)} className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">ยกเลิก</button>
-                <button type="submit" className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 shadow-md transition-colors">บันทึก</button>
-              </div>
-            </form>
+      {
+        isUserModalOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70] p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl transform transition-all">
+              <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">{editingUser ? 'แก้ไขผู้ใช้งาน' : 'เพิ่มผู้ใช้งานใหม่'}</h3>
+              <form onSubmit={handleUserSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">Username</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none disabled:bg-gray-100"
+                    value={userForm.username}
+                    onChange={e => setUserForm({ ...userForm, username: e.target.value })}
+                    disabled={!!editingUser}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">Password</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+                    value={userForm.password}
+                    onChange={e => setUserForm({ ...userForm, password: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อ-นามสกุล</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+                    value={userForm.name}
+                    onChange={e => setUserForm({ ...userForm, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">สิทธิ์การใช้งาน (Role)</label>
+                  <select
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 disabled:bg-gray-100 disabled:text-gray-500 outline-none focus:ring-2 focus:ring-purple-500"
+                    value={userForm.role}
+                    onChange={(e) => setUserForm({ ...userForm, role: e.target.value as Role })}
+                    disabled={editingUser?.id === currentUser.id}
+                  >
+                    <option value="ADMIN">Admin (จัดการเนื้อหา)</option>
+                    <option value="SUPER_ADMIN">Super Admin (จัดการทุกอย่าง)</option>
+                  </select>
+                  {editingUser?.id === currentUser.id && (
+                    <p className="text-xs text-amber-600 mt-1">คุณไม่สามารถเปลี่ยนสิทธิ์การใช้งานของตัวเองได้</p>
+                  )}
+                </div>
+                <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
+                  <button type="button" onClick={() => setIsUserModalOpen(false)} className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">ยกเลิก</button>
+                  <button type="submit" className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 shadow-md transition-colors">บันทึก</button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* Delete Confirmation Modal */}
-      {deleteConfirmation && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[80] p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl w-full max-w-sm p-6 shadow-2xl scale-100 transform transition-all">
-            <div className="text-center mb-6">
-              <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4">
-                <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+      {
+        deleteConfirmation && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[80] p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-xl w-full max-w-sm p-6 shadow-2xl scale-100 transform transition-all">
+              <div className="text-center mb-6">
+                <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4">
+                  <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">ยืนยันการลบ</h3>
+                <p className="text-sm text-gray-600">
+                  คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? <br />การกระทำนี้ไม่สามารถย้อนกลับได้
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">ยืนยันการลบ</h3>
-              <p className="text-sm text-gray-600">
-                คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? <br />การกระทำนี้ไม่สามารถย้อนกลับได้
-              </p>
-            </div>
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={() => setDeleteConfirmation(null)}
-                className="px-5 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors"
-              >
-                ยกเลิก
-              </button>
-              <button
-                onClick={executeDelete}
-                className="px-5 py-2.5 text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 font-medium transition-colors shadow-sm"
-              >
-                ยืนยันลบ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Menu Modal */}
-      {menuModal.isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl">
-            <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">
-              {menuModal.mode === 'add'
-                ? (menuModal.parentId ? 'เพิ่มเมนูย่อย' : 'เพิ่มเมนูหลัก')
-                : 'แก้ไขเมนู'}
-            </h3>
-            <form onSubmit={handleMenuSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อเมนู</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-                  value={menuForm.name}
-                  onChange={e => setMenuForm({ ...menuForm, name: e.target.value })}
-                  placeholder="เช่น หน้าแรก, ติดต่อเรา"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์ (URL/Anchor)</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-                  value={menuForm.href}
-                  onChange={e => setMenuForm({ ...menuForm, href: e.target.value })}
-                  placeholder="เช่น #home, https://example.com"
-                />
-              </div>
-              <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
+              <div className="flex justify-center gap-3">
                 <button
-                  type="button"
-                  onClick={() => setMenuModal({ ...menuModal, isOpen: false })}
-                  className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors"
+                  onClick={() => setDeleteConfirmation(null)}
+                  className="px-5 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                 >
                   ยกเลิก
                 </button>
                 <button
-                  type="submit"
-                  className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 shadow-md transition-colors"
+                  onClick={executeDelete}
+                  className="px-5 py-2.5 text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 font-medium transition-colors shadow-sm"
                 >
-                  บันทึก
+                  ยืนยันลบ
                 </button>
               </div>
-            </form>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
+
+      {/* Menu Modal */}
+      {
+        menuModal.isOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl">
+              <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">
+                {menuModal.mode === 'add'
+                  ? (menuModal.parentId ? 'เพิ่มเมนูย่อย' : 'เพิ่มเมนูหลัก')
+                  : 'แก้ไขเมนู'}
+              </h3>
+              <form onSubmit={handleMenuSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อเมนู</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+                    value={menuForm.name}
+                    onChange={e => setMenuForm({ ...menuForm, name: e.target.value })}
+                    placeholder="เช่น หน้าแรก, ติดต่อเรา"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์ (URL/Anchor)</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+                    value={menuForm.href}
+                    onChange={e => setMenuForm({ ...menuForm, href: e.target.value })}
+                    placeholder="เช่น #home, https://example.com"
+                  />
+                </div>
+                <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
+                  <button
+                    type="button"
+                    onClick={() => setMenuModal({ ...menuModal, isOpen: false })}
+                    className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 shadow-md transition-colors"
+                  >
+                    บันทึก
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )
+      }
 
       {/* News Modal */}
-      {isNewsModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
-            <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">{editingNews ? 'แก้ไขข่าว' : 'เพิ่มข่าวใหม่'}</h3>
-            <form onSubmit={handleNewsSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">หัวข้อข่าว</label>
-                <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.title} onChange={e => setNewsForm({ ...newsForm, title: e.target.value })} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">วันที่</label>
-                <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.date} onChange={e => setNewsForm({ ...newsForm, date: e.target.value })} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">เนื้อหาย่อ</label>
-                <textarea required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" rows={3} value={newsForm.excerpt} onChange={e => setNewsForm({ ...newsForm, excerpt: e.target.value })} />
-              </div>
+      {
+        isNewsModalOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+              <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">{editingNews ? 'แก้ไขข่าว' : 'เพิ่มข่าวใหม่'}</h3>
+              <form onSubmit={handleNewsSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">หัวข้อข่าว</label>
+                  <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.title} onChange={e => setNewsForm({ ...newsForm, title: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">วันที่</label>
+                  <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.date} onChange={e => setNewsForm({ ...newsForm, date: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">เนื้อหาย่อ</label>
+                  <textarea required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" rows={3} value={newsForm.excerpt} onChange={e => setNewsForm({ ...newsForm, excerpt: e.target.value })} />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">รูปภาพปกข่าว</label>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">รูปภาพปกข่าว</label>
 
-                {newsForm.imageUrl && (
-                  <div className="mb-3 relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-inner">
-                    <img src={newsForm.imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => setNewsForm({ ...newsForm, imageUrl: '' })}
-                      className="absolute top-2 right-2 bg-red-500/90 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors shadow-sm"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
-                  </div>
-                )}
-
-                <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 relative hover:bg-gray-100 transition-colors">
-                  {isUploading && (
-                    <div className="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center rounded-lg">
-                      <svg className="animate-spin h-8 w-8 text-green-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <span className="text-sm text-green-700 font-medium">กำลังประมวลผลรูปภาพ...</span>
+                  {newsForm.imageUrl && (
+                    <div className="mb-3 relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-inner">
+                      <img src={newsForm.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setNewsForm({ ...newsForm, imageUrl: '' })}
+                        className="absolute top-2 right-2 bg-red-500/90 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors shadow-sm"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
                     </div>
                   )}
 
-                  <div className="relative">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleNewsImageUpload}
-                      disabled={isUploading}
-                      className="block w-full text-sm text-gray-500
+                  <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 relative hover:bg-gray-100 transition-colors">
+                    {isUploading && (
+                      <div className="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center rounded-lg">
+                        <svg className="animate-spin h-8 w-8 text-green-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="text-sm text-green-700 font-medium">กำลังประมวลผลรูปภาพ...</span>
+                      </div>
+                    )}
+
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleNewsImageUpload}
+                        disabled={isUploading}
+                        className="block w-full text-sm text-gray-500
                         file:mr-4 file:py-2 file:px-4
                         file:rounded-full file:border-0
                         file:text-sm file:font-semibold
                         file:bg-green-100 file:text-green-700
                         hover:file:bg-green-200 cursor-pointer disabled:opacity-50"
+                      />
+                    </div>
+                    <div className="text-xs text-gray-400 text-center font-medium">- หรือ -</div>
+                    <input
+                      type="text"
+                      placeholder="วางลิงก์รูปภาพ (URL) กรณีไม่ต้องการอัปโหลด"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white focus:ring-2 focus:ring-green-500 outline-none"
+                      value={newsForm.imageUrl.startsWith('data:') ? '' : newsForm.imageUrl}
+                      onChange={e => setNewsForm({ ...newsForm, imageUrl: e.target.value })}
+                      onBlur={handleUrlBlur}
+                      disabled={newsForm.imageUrl.startsWith('data:') || isUploading}
                     />
                   </div>
-                  <div className="text-xs text-gray-400 text-center font-medium">- หรือ -</div>
-                  <input
-                    type="text"
-                    placeholder="วางลิงก์รูปภาพ (URL) กรณีไม่ต้องการอัปโหลด"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white focus:ring-2 focus:ring-green-500 outline-none"
-                    value={newsForm.imageUrl.startsWith('data:') ? '' : newsForm.imageUrl}
-                    onChange={e => setNewsForm({ ...newsForm, imageUrl: e.target.value })}
-                    onBlur={handleUrlBlur}
-                    disabled={newsForm.imageUrl.startsWith('data:') || isUploading}
-                  />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์อ่านต่อ</label>
-                <input type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.href} onChange={e => setNewsForm({ ...newsForm, href: e.target.value })} />
-              </div>
-              <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
-                <button type="button" onClick={() => setIsNewsModalOpen(false)} className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">ยกเลิก</button>
-                <button
-                  type="submit"
-                  disabled={isUploading}
-                  className={`bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition shadow-md ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {isUploading ? 'กำลังอัปโหลด...' : 'บันทึก'}
-                </button>
-              </div>
-            </form>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์อ่านต่อ</label>
+                  <input type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.href} onChange={e => setNewsForm({ ...newsForm, href: e.target.value })} />
+                </div>
+                <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
+                  <button type="button" onClick={() => setIsNewsModalOpen(false)} className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">ยกเลิก</button>
+                  <button
+                    type="submit"
+                    disabled={isUploading}
+                    className={`bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition shadow-md ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {isUploading ? 'กำลังอัปโหลด...' : 'บันทึก'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* Service Modal */}
-      {isServiceModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl w-full max-w-lg p-6 shadow-2xl">
-            <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">{editingService ? 'แก้ไขบริการ' : 'เพิ่มบริการใหม่'}</h3>
-            <form onSubmit={handleServiceSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อบริการ</label>
-                <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={serviceForm.label} onChange={e => setServiceForm({ ...serviceForm, label: e.target.value })} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">คำอธิบาย (Tooltip)</label>
-                <textarea className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" rows={2} value={serviceForm.description || ''} onChange={e => setServiceForm({ ...serviceForm, description: e.target.value })} placeholder="อธิบายเพิ่มเติมเกี่ยวกับบริการนี้ (แสดงเมื่อเอาเมาส์ชี้)" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์</label>
-                <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={serviceForm.href} onChange={e => setServiceForm({ ...serviceForm, href: e.target.value })} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">ไอคอน</label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-                  value={serviceForm.iconName}
-                  onChange={e => setServiceForm({ ...serviceForm, iconName: e.target.value })}
-                >
-                  {Object.keys(ICONS).map(iconName => (
-                    <option key={iconName} value={iconName}>{iconName}</option>
-                  ))}
-                </select>
-                <div className="mt-3 flex items-center gap-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                  <span>ตัวอย่างไอคอน:</span>
-                  <div className="w-10 h-10 text-green-600 bg-white rounded-md flex items-center justify-center shadow-sm border border-gray-200">
-                    {ICONS[serviceForm.iconName] && React.createElement(ICONS[serviceForm.iconName], { className: "w-6 h-6" })}
+      {
+        isServiceModalOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-xl w-full max-w-lg p-6 shadow-2xl">
+              <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">{editingService ? 'แก้ไขบริการ' : 'เพิ่มบริการใหม่'}</h3>
+              <form onSubmit={handleServiceSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อบริการ</label>
+                  <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={serviceForm.label} onChange={e => setServiceForm({ ...serviceForm, label: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">คำอธิบาย (Tooltip)</label>
+                  <textarea className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" rows={2} value={serviceForm.description || ''} onChange={e => setServiceForm({ ...serviceForm, description: e.target.value })} placeholder="อธิบายเพิ่มเติมเกี่ยวกับบริการนี้ (แสดงเมื่อเอาเมาส์ชี้)" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์</label>
+                  <input required type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={serviceForm.href} onChange={e => setServiceForm({ ...serviceForm, href: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ไอคอน</label>
+                  <select
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+                    value={serviceForm.iconName}
+                    onChange={e => setServiceForm({ ...serviceForm, iconName: e.target.value })}
+                  >
+                    {Object.keys(ICONS).map(iconName => (
+                      <option key={iconName} value={iconName}>{iconName}</option>
+                    ))}
+                  </select>
+                  <div className="mt-3 flex items-center gap-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                    <span>ตัวอย่างไอคอน:</span>
+                    <div className="w-10 h-10 text-green-600 bg-white rounded-md flex items-center justify-center shadow-sm border border-gray-200">
+                      {ICONS[serviceForm.iconName] && React.createElement(ICONS[serviceForm.iconName], { className: "w-6 h-6" })}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
-                <button type="button" onClick={() => setIsServiceModalOpen(false)} className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">ยกเลิก</button>
-                <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 shadow-md transition-colors">บันทึก</button>
-              </div>
-            </form>
+                <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
+                  <button type="button" onClick={() => setIsServiceModalOpen(false)} className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">ยกเลิก</button>
+                  <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 shadow-md transition-colors">บันทึก</button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-    </div>
+    </div >
   );
 };
 

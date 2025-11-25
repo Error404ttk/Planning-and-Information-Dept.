@@ -4,7 +4,7 @@ import FilePreviewModal from './FilePreviewModal';
 import { Resource } from '../types';
 
 const Header: React.FC = () => {
-  const { navLinks, resources } = useData();
+  const { navLinks, resources, settings } = useData();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -125,7 +125,11 @@ const Header: React.FC = () => {
           <div className="flex items-center justify-between h-24">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <img className="h-[77px] w-[77px]" src="https://picsum.photos/seed/logo/77/77" alt="Logo โรงพยาบาลสารภี" />
+                <img
+                  className="h-[77px] w-[77px] rounded-full object-cover"
+                  src={settings?.hospitalLogo || "https://picsum.photos/seed/logo/77/77"}
+                  alt="Logo โรงพยาบาลสารภี"
+                />
               </div>
               <div className="ml-4">
                 <h1 className="text-xl font-bold text-green-800">งานแผนงานและสารสนเทศ</h1>
