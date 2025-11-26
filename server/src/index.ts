@@ -11,8 +11,11 @@ import userRoutes from './routes/users';
 import path from 'path';
 import uploadRoutes from './routes/upload';
 import resourceRoutes from './routes/resources';
+import chatRoutes from './routes/chat';
 // Settings routes
 import settingsRoutes from './routes/settings';
+import navlinksRoutes from './routes/navlinks';
+import griditemsRoutes from './routes/griditems';
 
 dotenv.config();
 
@@ -104,6 +107,9 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/slides', slideRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/navlinks', navlinksRoutes);
+app.use('/api/griditems', griditemsRoutes);
 
 
 // Serve frontend static files (after building with 'npm run build')

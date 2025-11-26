@@ -40,6 +40,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchResources();
     fetchSlides();
     fetchSettings();
+    fetchNavLinks();
+    fetchGridItems();
   }, []);
 
   const fetchSettings = async () => {
@@ -290,8 +292,67 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // --- Content Methods ---
 
-  const updateNavLinks = (links: NavLink[]) => setNavLinks(links);
-  const updateGridItems = (items: GridItem[]) => setGridItems(items);
+  const fetchNavLinks = async () => {
+    try {
+      const res = await fetch('/api/navlinks');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.length > 0) {
+          setNavLinks(data);
+        }
+        // If empty, keep INITIAL_NAV_LINKS from constants
+      }
+    } catch (err) {
+      console.error("Fetch navlinks failed", err);
+    }
+  };
+
+  const fetchGridItems = async () => {
+    try {
+      const res = await fetch('/api/griditems');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.length > 0) {
+          setGridItems(data);
+        }
+        // If empty, keep INITIAL_GRID_ITEMS from constants
+      }
+    } catch (err) {
+      console.error("Fetch griditems failed", err);
+    }
+  };
+
+  const updateNavLinks = async (links: NavLink[]) => {
+    setNavLinks(links);
+    try {
+      const res = await fetch('/api/navlinks', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(links)
+      });
+      if (!res.ok) {
+        console.error('Failed to update navlinks');
+      }
+    } catch (error) {
+      console.error('Error updating navlinks:', error);
+    }
+  };
+
+  const updateGridItems = async (items: GridItem[]) => {
+    setGridItems(items);
+    try {
+      const res = await fetch('/api/griditems', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(items)
+      });
+      if (!res.ok) {
+        console.error('Failed to update griditems');
+      }
+    } catch (error) {
+      console.error('Error updating griditems:', error);
+    }
+  };
 
 
   const addNews = async (news: NewsArticle) => {

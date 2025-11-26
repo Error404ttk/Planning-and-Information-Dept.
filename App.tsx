@@ -7,6 +7,7 @@ import AboutSection from './components/AboutSection';
 import Footer from './components/Footer';
 import BackToTopButton from './components/BackToTopButton';
 import CookieConsentBanner from './components/CookieConsentBanner';
+import ChatWidget from './components/ChatWidget';
 import AdminDashboard from './components/AdminDashboard';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { useData } from './contexts/DataContext';
@@ -259,6 +260,7 @@ const App: React.FC = () => {
       <Footer />
       <BackToTopButton />
       <CookieConsentBanner />
+      <ChatWidget />
     </div>
   );
 };
