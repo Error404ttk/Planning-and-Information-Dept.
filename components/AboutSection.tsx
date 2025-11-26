@@ -1,6 +1,9 @@
 import React from 'react';
+import { useData } from '../contexts/DataContext';
 
 const AboutSection: React.FC = () => {
+  const { settings } = useData();
+
   return (
     <section id="about" className="py-16 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,7 +35,7 @@ const AboutSection: React.FC = () => {
                 </svg>
                 <span className="text-gray-700">จัดการฐานข้อมูลและวิเคราะห์ข้อมูลสถิติ</span>
               </li>
-               <li className="flex items-start">
+              <li className="flex items-start">
                 <svg className="flex-shrink-0 h-6 w-6 text-green-600 mr-3 mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6-4a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -41,10 +44,10 @@ const AboutSection: React.FC = () => {
             </ul>
           </div>
           <div className="order-1 md:order-2 rounded-lg shadow-2xl overflow-hidden">
-            <img 
+            <img
               loading="lazy"
-              src="https://picsum.photos/seed/aboutus/800/600" 
-              alt="ทีมงานแผนงานและสารสนเทศ" 
+              src={settings?.aboutImage || "https://picsum.photos/seed/aboutus/800/600"}
+              alt="ทีมงานแผนงานและสารสนเทศ"
               className="w-full h-auto object-cover transition-transform duration-500 ease-in-out hover:scale-105"
               width="800"
               height="600"

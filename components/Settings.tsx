@@ -2,9 +2,11 @@ import React, { useState, useRef } from 'react';
 import { useData } from '../contexts/DataContext';
 
 const Settings: React.FC = () => {
-    const { settings, updateLogo } = useData();
-    const [isUploading, setIsUploading] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const { settings, updateLogo, updateAboutImage } = useData();
+    const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+    const [isUploadingAbout, setIsUploadingAbout] = useState(false);
+    const logoFileInputRef = useRef<HTMLInputElement>(null);
+    const aboutFileInputRef = useRef<HTMLInputElement>(null);
 
     const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -22,7 +24,7 @@ const Settings: React.FC = () => {
             return;
         }
 
-        setIsUploading(true);
+        setIsUploadingLogo(true);
         try {
             await updateLogo(file);
             alert('อัปโหลดโลโก้สำเร็จ');
@@ -30,9 +32,40 @@ const Settings: React.FC = () => {
             console.error('Upload failed:', error);
             alert('เกิดข้อผิดพลาดในการอัปโหลดโลโก้');
         } finally {
-            setIsUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
+            setIsUploadingLogo(false);
+            if (logoFileInputRef.current) {
+                logoFileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const handleAboutImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น');
+            return;
+        }
+
+        // Validate file size (e.g., 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('ขนาดไฟล์ต้องไม่เกิน 2MB');
+            return;
+        }
+
+        setIsUploadingAbout(true);
+        try {
+            await updateAboutImage(file);
+            alert('อัปโหลดรูปภาพสำเร็จ');
+        } catch (error) {
+            console.error('Upload failed:', error);
+            alert('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ');
+        } finally {
+            setIsUploadingAbout(false);
+            if (aboutFileInputRef.current) {
+                aboutFileInputRef.current.value = '';
             }
         }
     };
@@ -64,7 +97,7 @@ const Settings: React.FC = () => {
                             <div className="flex items-center gap-4">
                                 <input
                                     type="file"
-                                    ref={fileInputRef}
+                                    ref={logoFileInputRef}
                                     onChange={handleLogoUpload}
                                     accept="image/*"
                                     className="block w-full text-sm text-gray-500
@@ -74,9 +107,9 @@ const Settings: React.FC = () => {
                     file:bg-green-50 file:text-green-700
                     hover:file:bg-green-100
                     cursor-pointer"
-                                    disabled={isUploading}
+                                    disabled={isUploadingLogo}
                                 />
-                                {isUploading && (
+                                {isUploadingLogo && (
                                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
                                 )}
                             </div>
@@ -87,14 +120,54 @@ const Settings: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Future settings can go here */}
-                {/* <div className="pt-6 border-t">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">ตั้งค่าอื่นๆ</h3>
-          ...
-        </div> */}
+                {/* About Image Settings */}
+                <div className="pt-6 border-t">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">รูปภาพหน้า "เกี่ยวกับเรา"</h3>
+                    <div className="flex items-start gap-8">
+                        <div className="flex-shrink-0">
+                            <p className="text-sm text-gray-500 mb-2">รูปภาพปัจจุบัน:</p>
+                            <div className="w-[200px] h-[150px] rounded-lg overflow-hidden border-2 border-gray-200 shadow-sm">
+                                <img
+                                    src={settings?.aboutImage || "https://picsum.photos/seed/aboutus/800/600"}
+                                    alt="Current About Image"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex-grow max-w-md">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                อัปโหลดรูปภาพใหม่
+                            </label>
+                            <div className="flex items-center gap-4">
+                                <input
+                                    type="file"
+                                    ref={aboutFileInputRef}
+                                    onChange={handleAboutImageUpload}
+                                    accept="image/*"
+                                    className="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-green-50 file:text-green-700
+                    hover:file:bg-green-100
+                    cursor-pointer"
+                                    disabled={isUploadingAbout}
+                                />
+                                {isUploadingAbout && (
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
+                                )}
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2">
+                                แนะนำ: ไฟล์รูปภาพ (PNG, JPG) ขนาดไม่เกิน 2MB สัดส่วนที่เหมาะสม 800x600px
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
 };
 
 export default Settings;
+

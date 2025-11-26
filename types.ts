@@ -63,6 +63,7 @@ export interface Resource {
 
 export interface SystemSettings {
   hospitalLogo?: string;
+  aboutImage?: string;
   [key: string]: string | undefined;
 }
 
@@ -112,6 +113,7 @@ export interface DataContextType {
   // Settings
   settings: SystemSettings;
   updateLogo: (file: File) => Promise<void>;
+  updateAboutImage: (file: File) => Promise<void>;
 
   resetToDefaults: () => void;
 }

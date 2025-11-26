@@ -19,7 +19,9 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'hospital-logo-' + uniqueSuffix + path.extname(file.originalname));
+        // Use field name to create appropriate prefix
+        const prefix = file.fieldname === 'aboutImage' ? 'about-image-' : 'hospital-logo-';
+        cb(null, prefix + uniqueSuffix + path.extname(file.originalname));
     }
 });
 
@@ -73,4 +75,28 @@ router.post('/logo', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), upload.s
     }
 });
 
+// POST /api/settings/about-image - Upload About Us section image
+router.post('/about-image', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), upload.single('aboutImage'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No about image file uploaded' });
+        }
+
+        const imageUrl = `/uploads/${req.file.filename}`;
+
+        // Upsert the setting
+        await prisma.systemSetting.upsert({
+            where: { key: 'aboutImage' },
+            update: { value: imageUrl },
+            create: { key: 'aboutImage', value: imageUrl }
+        });
+
+        res.json({ imageUrl, message: 'About image updated successfully' });
+    } catch (error) {
+        console.error('Error uploading about image:', error);
+        res.status(500).json({ error: 'Failed to upload about image' });
+    }
+});
+
 export default router;
+

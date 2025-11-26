@@ -78,7 +78,32 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateAboutImage = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('aboutImage', file);
+
+      const res = await fetch('/api/settings/about-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setSettings(prev => ({ ...prev, aboutImage: data.imageUrl }));
+        // Also refresh settings to be sure
+        fetchSettings();
+      } else {
+        throw new Error('Failed to upload about image');
+      }
+    } catch (error) {
+      console.error('Error updating about image:', error);
+      throw error;
+    }
+  };
+
   // ... (rest of existing functions)
+
 
   const updateSlideOrder = async (id: string, newOrder: number) => {
     // Not implemented in API yet, but we can update local state
@@ -515,6 +540,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateSlide,
     deleteSlide,
     updateLogo,
+    updateAboutImage,
     resetToDefaults,
     checkAuth,
   };
