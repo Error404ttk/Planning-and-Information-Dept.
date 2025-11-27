@@ -153,46 +153,30 @@ const Header: React.FC = () => {
                         <div className="bg-white shadow-lg rounded-md py-1 w-64 z-10 ring-1 ring-black ring-opacity-5">
                           {link.submenu.map((sublink) => (
                             sublink.submenu && sublink.submenu.length > 0 ? (
-                              <div key={sublink.id || sublink.name} className="relative group/sub">
-                                <button
-                                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition-colors duration-200 flex items-center justify-between border-0 bg-transparent cursor-pointer"
-                                  onClick={(e) => e.preventDefault()}
-                                >
-                                  <span>{sublink.name}</span>
-                                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
-                                </button>
-                                {/* 3rd Level Dropdown */}
-                                <div className="absolute left-full top-0 opacity-0 invisible group-hover/sub:visible group-hover/sub:opacity-100 transform-gpu translate-x-1 group-hover/sub:translate-x-0 transition-all duration-200 ease-out pl-1 top-[-4px]">
-                                  <div className="bg-white shadow-lg rounded-md py-1 w-64 ring-1 ring-black ring-opacity-5">
-                                    {sublink.submenu.map((res: any) => (
-                                      <button
-                                        key={res.id || res.name}
-                                        onClick={(e) => {
-                                          console.log('Resource button clicked!', res);
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          if (res.isResource) {
-                                            console.log('Setting preview file:', res.resource);
-                                            trackDownload(res.resource.id);
-                                            setPreviewFile(res.resource);
-                                          } else {
-                                            console.log('Not a resource!', res);
-                                          }
-                                        }}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-800 transition-colors duration-200 flex items-center gap-2 cursor-pointer border-0 bg-transparent"
-                                      >
-                                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                        </svg>
-                                        {res.name}
-                                        {res.resource?.downloadCount > 0 && (
-                                          <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
-                                        )}
-                                      </button>
-                                    ))}
-                                  </div>
+                              // If this submenu has files, make it navigate to files list page
+                              <button
+                                key={sublink.id || sublink.name}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  window.dispatchEvent(new CustomEvent('navigate-to-files', {
+                                    detail: {
+                                      category: link.name,
+                                      subcategory: sublink.name
+                                    }
+                                  }));
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition-colors duration-200 flex items-center justify-between border-0 bg-transparent cursor-pointer"
+                              >
+                                <span>{sublink.name}</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                                    {sublink.submenu.length}
+                                  </span>
+                                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                  </svg>
                                 </div>
-                              </div>
+                              </button>
                             ) : (
                               <a
                                 key={sublink.id || sublink.name}
@@ -205,6 +189,7 @@ const Header: React.FC = () => {
                           ))}
                         </div>
                       </div>
+
                     </div>
                   ) : (
                     <a
@@ -275,32 +260,31 @@ const Header: React.FC = () => {
                     >
                       {link.submenu.map((sublink) => (
                         sublink.submenu && sublink.submenu.length > 0 ? (
-                          <div key={sublink.id || sublink.name} className="space-y-1">
-                            <div className="text-gray-500 px-3 py-1 text-sm font-semibold">{sublink.name}</div>
-                            {sublink.submenu.map((res: any) => (
-                              <button
-                                key={res.id || res.name}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  if (res.isResource) {
-                                    trackDownload(res.resource.id);
-                                    setPreviewFile(res.resource);
-                                    setIsMenuOpen(false);
-                                  }
-                                }}
-                                className="block w-full text-left pl-6 pr-3 py-2 text-sm text-gray-600 hover:text-green-700 flex items-center gap-2 cursor-pointer border-0 bg-transparent"
-                              >
-                                <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                </svg>
-                                - {res.name}
-                                {res.resource?.downloadCount > 0 && (
-                                  <span className="ml-auto text-xs text-gray-400">({res.resource.downloadCount})</span>
-                                )}
-                              </button>
-                            ))}
-                          </div>
+                          // If this submenu has files, make it navigate to files list page
+                          <button
+                            key={sublink.id || sublink.name}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              window.dispatchEvent(new CustomEvent('navigate-to-files', {
+                                detail: {
+                                  category: link.name,
+                                  subcategory: sublink.name
+                                }
+                              }));
+                              setIsMenuOpen(false);
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:text-green-700 hover:bg-green-50 rounded flex items-center justify-between cursor-pointer border-0 bg-transparent"
+                          >
+                            <span>{sublink.name}</span>
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                                {sublink.submenu.length}
+                              </span>
+                              <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                              </svg>
+                            </div>
+                          </button>
                         ) : (
                           <a
                             key={sublink.id || sublink.name}

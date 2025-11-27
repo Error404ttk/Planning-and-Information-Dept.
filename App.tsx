@@ -10,19 +10,26 @@ import CookieConsentBanner from './components/CookieConsentBanner';
 import ChatWidget from './components/ChatWidget';
 import AdminDashboard from './components/AdminDashboard';
 import ChangePasswordModal from './components/ChangePasswordModal';
+import FilesListPage from './components/FilesListPage';
 import { useData } from './contexts/DataContext';
 
+
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'admin-login' | 'admin-dashboard'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'admin-login' | 'admin-dashboard' | 'files-list'>('home');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
+  // Files List Page State
+  const [currentCategory, setCurrentCategory] = useState('');
+  const [currentSubcategory, setCurrentSubcategory] = useState('');
+
   // Brute Force Protection State
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
+
 
   const { login, logout, currentUser, mustChangePassword } = useData();
 
@@ -38,6 +45,21 @@ const App: React.FC = () => {
     window.addEventListener('request-admin-login', handleAdminRequest);
     return () => window.removeEventListener('request-admin-login', handleAdminRequest);
   }, [currentUser]);
+
+  // Listen for custom event to navigate to files list page
+  useEffect(() => {
+    const handleFilesNavigation = (e: CustomEvent) => {
+      const { category, subcategory } = e.detail;
+      setCurrentCategory(category);
+      setCurrentSubcategory(subcategory);
+      setCurrentView('files-list');
+      // Scroll to top when navigating
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    window.addEventListener('navigate-to-files', handleFilesNavigation as EventListener);
+    return () => window.removeEventListener('navigate-to-files', handleFilesNavigation as EventListener);
+  }, []);
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,7 +141,20 @@ const App: React.FC = () => {
     );
   }
 
+  if (currentView === 'files-list') {
+    return (
+      <div className="animate-[fadeIn_0.5s_ease-in-out]">
+        <FilesListPage
+          category={currentCategory}
+          subcategory={currentSubcategory}
+          onBack={() => setCurrentView('home')}
+        />
+      </div>
+    );
+  }
+
   if (currentView === 'admin-login' || (currentView === 'admin-dashboard' && !currentUser)) {
+
     const isLocked = lockoutUntil !== null && Date.now() < lockoutUntil;
 
     return (
