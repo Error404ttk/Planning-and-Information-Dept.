@@ -3,6 +3,10 @@ import { useData } from '../contexts/DataContext';
 import { ICONS } from '../constants';
 import { NewsArticle, GridItem, NavLink, User, Role } from '../types';
 import Settings from './Settings';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+// @ts-ignore - heic2any doesn't have TypeScript definitions
+import heic2any from 'heic2any';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -15,9 +19,6 @@ const DragHandleIcon = ({ className = "w-5 h-5 text-gray-400 cursor-move hover:t
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16"></path>
   </svg>
 );
-
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
 
@@ -506,8 +507,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
   const handleNewsImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
+      // Check if file is HEIC/HEIF format
+      const isHEIC = file.type === 'image/heic' || file.type === 'image/heif' ||
+        file.name.toLowerCase().endsWith('.heic') ||
+        file.name.toLowerCase().endsWith('.heif');
+
+      // Validate file type (allow HEIC)
+      if (!file.type.startsWith('image/') && !isHEIC) {
         alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
         return;
       }
@@ -518,7 +524,31 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
 
       setIsUploading(true);
       try {
-        const dataUrl = await processImage(file);
+        let processedFile = file;
+
+        // Convert HEIC to JPEG if needed
+        if (isHEIC) {
+          try {
+            const convertedBlob = await heic2any({
+              blob: file,
+              toType: 'image/jpeg',
+              quality: 0.9
+            });
+
+            // heic2any might return array or single blob
+            const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+            processedFile = new File([blob], file.name.replace(/\.heic$/i, '.jpg'), {
+              type: 'image/jpeg'
+            });
+          } catch (conversionError) {
+            console.error('HEIC conversion error:', conversionError);
+            alert('ไม่สามารถแปลงไฟล์ HEIC ได้ กรุณาลองใช้ไฟล์รูปแบบอื่น');
+            setIsUploading(false);
+            return;
+          }
+        }
+
+        const dataUrl = await processImage(processedFile);
         setNewsForm(prev => ({ ...prev, imageUrl: dataUrl }));
       } catch (error) {
         console.error("Image processing error:", error);
