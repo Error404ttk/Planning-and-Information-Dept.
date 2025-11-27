@@ -421,6 +421,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
   const [editingNews, setEditingNews] = useState<NewsArticle | null>(null);
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [imageProcessProgress, setImageProcessProgress] = useState(0);
   const emptyNews: NewsArticle = { id: '', title: '', excerpt: '', date: '', imageUrl: '', href: '#' };
   const [newsForm, setNewsForm] = useState<NewsArticle>(emptyNews);
 
@@ -523,38 +524,49 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
       }
 
       setIsUploading(true);
+      setImageProcessProgress(0);
+
       try {
         let processedFile = file;
 
         // Convert HEIC to JPEG if needed
         if (isHEIC) {
+          setImageProcessProgress(10);
           try {
             const convertedBlob = await heic2any({
               blob: file,
               toType: 'image/jpeg',
               quality: 0.9
             });
+            setImageProcessProgress(50);
 
             // heic2any might return array or single blob
             const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
             processedFile = new File([blob], file.name.replace(/\.heic$/i, '.jpg'), {
               type: 'image/jpeg'
             });
+            setImageProcessProgress(60);
           } catch (conversionError) {
             console.error('HEIC conversion error:', conversionError);
             alert('ไม่สามารถแปลงไฟล์ HEIC ได้ กรุณาลองใช้ไฟล์รูปแบบอื่น');
             setIsUploading(false);
+            setImageProcessProgress(0);
             return;
           }
+        } else {
+          setImageProcessProgress(30);
         }
 
+        setImageProcessProgress(70);
         const dataUrl = await processImage(processedFile);
+        setImageProcessProgress(100);
         setNewsForm(prev => ({ ...prev, imageUrl: dataUrl }));
       } catch (error) {
         console.error("Image processing error:", error);
         alert("ไม่สามารถประมวลผลรูปภาพได้");
       } finally {
         setIsUploading(false);
+        setTimeout(() => setImageProcessProgress(0), 500);
       }
     }
   };
@@ -1612,6 +1624,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                         hover:file:bg-green-200 cursor-pointer disabled:opacity-50"
                       />
                     </div>
+
+                    {/* Image Processing Progress Bar */}
+                    {isUploading && imageProcessProgress > 0 && (
+                      <div className="space-y-2 mt-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700 font-medium">กำลังประมวลผลรูปภาพ...</span>
+                          <span className="text-green-600 font-bold">{imageProcessProgress}%</span>
+                        </div>
+                        <div className="relative w-full h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                          <div
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-300 ease-out rounded-full"
+                            style={{ width: `${imageProcessProgress}%` }}
+                          >
+                            <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="text-xs text-gray-400 text-center font-medium">- หรือ -</div>
                     <input
                       type="text"
