@@ -6,9 +6,10 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // Initialize Gemini AI
-const genAI = process.env.GEMINI_API_KEY
-    ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-    : null;
+const apiKey = process.env.GEMINI_API_KEY;
+const isConfigured = apiKey && apiKey !== 'your_gemini_api_key_here' && apiKey.length > 20;
+
+const genAI = isConfigured ? new GoogleGenerativeAI(apiKey) : null;
 
 // System instruction for the chatbot
 const systemInstruction = `
@@ -55,16 +56,18 @@ const systemInstruction = `
 
 // POST /api/chat - Send message to chatbot
 router.post('/', async (req, res) => {
-    try {
-        const { message } = req.body;
+    const { message } = req.body;
 
-        if (!message || typeof message !== 'string') {
-            return res.status(400).json({ error: 'Message is required' });
-        }
+    if (!message || typeof message !== 'string') {
+        return res.status(400).json({ error: 'Message is required' });
+    }
+
+    try {
 
         // Check if Gemini API is configured
-        if (!genAI || !process.env.GEMINI_API_KEY) {
+        if (!genAI) {
             // Fallback to simple responses if API key is not configured
+            console.log('Gemini API not configured or invalid key. Using fallback.');
             const fallbackResponse = getFallbackResponse(message);
             return res.json({
                 reply: fallbackResponse,
@@ -74,7 +77,7 @@ router.post('/', async (req, res) => {
 
         // Use Gemini AI
         const model = genAI.getGenerativeModel({
-            model: 'gemini-pro',
+            model: 'gemini-1.5-flash',
             systemInstruction: { role: 'system', parts: [{ text: systemInstruction }] }
         });
 
@@ -90,12 +93,12 @@ router.post('/', async (req, res) => {
     } catch (error) {
         console.error('Chat error:', error);
 
-        // Fallback on error
-        const fallbackResponse = 'ขออภัยค่ะ ขณะนี้ระบบมีปัญหา กรุณาติดต่อโรงพยาบาลสารภีโดยตรงที่ [ระบุเบอร์โทรศัพท์] หรือลองใหม่อีกครั้งค่ะ 🙏';
+        // Use fallback response even on API error so the user gets an answer
+        const fallbackResponse = getFallbackResponse(message);
 
         res.json({
             reply: fallbackResponse,
-            source: 'error_fallback'
+            source: 'fallback_on_error'
         });
     }
 });
