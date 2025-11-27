@@ -36,6 +36,7 @@ router.post('/', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), async (req, 
 
         res.json(news);
     } catch (error) {
+        console.error('Error creating news:', error);
         res.status(500).json({ error: 'Failed to create news' });
     }
 });

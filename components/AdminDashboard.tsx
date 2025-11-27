@@ -5,8 +5,6 @@ import { NewsArticle, GridItem, NavLink, User, Role } from '../types';
 import Settings from './Settings';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-// @ts-ignore - heic2any doesn't have TypeScript definitions
-import heic2any from 'heic2any';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -513,8 +511,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
         file.name.toLowerCase().endsWith('.heic') ||
         file.name.toLowerCase().endsWith('.heif');
 
-      // Validate file type (allow HEIC)
-      if (!file.type.startsWith('image/') && !isHEIC) {
+      // Show helpful message for HEIC files
+      if (isHEIC) {
+        alert('ไฟล์ HEIC/HEIF ยังไม่รองรับโดยตรง\n\nกรุณาแปลงเป็น JPEG หรือ PNG ก่อนอัพโหลด\n\nวิธีแปลง:\n- iPhone: เปิดรูป > แชร์ > บันทึกเป็น JPEG\n- Mac: เปิดด้วย Preview > Export > เลือก JPEG');
+        e.target.value = ''; // Clear input
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
         alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
         return;
       }
@@ -527,38 +532,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
       setImageProcessProgress(0);
 
       try {
-        let processedFile = file;
-
-        // Convert HEIC to JPEG if needed
-        if (isHEIC) {
-          setImageProcessProgress(10);
-          try {
-            const convertedBlob = await heic2any({
-              blob: file,
-              toType: 'image/jpeg',
-              quality: 0.9
-            });
-            setImageProcessProgress(50);
-
-            // heic2any might return array or single blob
-            const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
-            processedFile = new File([blob], file.name.replace(/\.heic$/i, '.jpg'), {
-              type: 'image/jpeg'
-            });
-            setImageProcessProgress(60);
-          } catch (conversionError) {
-            console.error('HEIC conversion error:', conversionError);
-            alert('ไม่สามารถแปลงไฟล์ HEIC ได้ กรุณาลองใช้ไฟล์รูปแบบอื่น');
-            setIsUploading(false);
-            setImageProcessProgress(0);
-            return;
-          }
-        } else {
-          setImageProcessProgress(30);
-        }
-
-        setImageProcessProgress(70);
-        const dataUrl = await processImage(processedFile);
+        setImageProcessProgress(30);
+        const dataUrl = await processImage(file);
         setImageProcessProgress(100);
         setNewsForm(prev => ({ ...prev, imageUrl: dataUrl }));
       } catch (error) {

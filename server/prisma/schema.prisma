@@ -23,7 +23,7 @@ model NewsArticle {
   title     String
   excerpt   String   @db.Text
   content   String?  @db.Text
-  imageUrl  String
+  imageUrl  String   @db.LongText
   date      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
