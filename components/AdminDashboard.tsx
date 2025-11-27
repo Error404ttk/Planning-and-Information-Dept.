@@ -997,10 +997,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                           <span className="hidden sm:inline">ย่อย</span>
                         </button>
                         <div className="h-4 w-px bg-gray-200 mx-1"></div>
-                        <button onClick={() => openMenuModal('edit', null, link)} className="text-gray-400 hover:text-blue-600 p-2 transition-colors rounded-lg hover:bg-blue-50" title="แก้ไข">
+                        <button onClick={() => openMenuModal('edit', null, link)} className="text-blue-500 hover:text-blue-700 p-2 transition-colors rounded-lg hover:bg-blue-50" title="แก้ไข">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                         </button>
-                        <button onClick={() => confirmDelete('menu', link.id!)} className="text-gray-400 hover:text-red-600 p-2 transition-colors rounded-lg hover:bg-red-50" title="ลบ">
+                        <button onClick={() => confirmDelete('menu', link.id!)} className="text-red-500 hover:text-red-700 p-2 transition-colors rounded-lg hover:bg-red-50" title="ลบ">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         </button>
                       </div>
@@ -1034,10 +1034,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                             </div>
 
                             <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/sub:opacity-100 transition-opacity duration-200">
-                              <button onClick={() => openMenuModal('edit', link.id, sub)} className="text-gray-400 hover:text-blue-600 p-1.5 rounded-md hover:bg-blue-50 transition-colors" title="แก้ไข">
+                              <button onClick={() => openMenuModal('edit', link.id, sub)} className="text-blue-500 hover:text-blue-700 p-1.5 rounded-md hover:bg-blue-50 transition-colors" title="แก้ไข">
                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                               </button>
-                              <button onClick={() => confirmDelete('menu', sub.id!, link.id)} className="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors" title="ลบ">
+                              <button onClick={() => confirmDelete('menu', sub.id!, link.id)} className="text-red-500 hover:text-red-700 p-1.5 rounded-md hover:bg-red-50 transition-colors" title="ลบ">
                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                               </button>
                             </div>
