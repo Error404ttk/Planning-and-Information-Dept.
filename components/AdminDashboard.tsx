@@ -198,13 +198,13 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          {initialData ? 'เปลี่ยนไฟล์ (ถ้าต้องการ)' : 'เลือกไฟล์ (PDF, Word, Excel, Image)'}
+          {initialData ? 'เปลี่ยนไฟล์ (ถ้าต้องการ)' : 'เลือกไฟล์ (PDF, Word, Excel, Image, ZIP, RAR)'}
         </label>
         <input
           type="file"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-          accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.zip,.rar"
           required={!initialData}
         />
         {initialData && (
