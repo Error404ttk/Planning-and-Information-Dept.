@@ -23,10 +23,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit (increased from 10MB)
     fileFilter: (req, file, cb) => {
         // Allowed file extensions
-        const allowedExtensions = /jpeg|jpg|png|gif|pdf|doc|docx|xls|xlsx/;
+        const allowedExtensions = /jpeg|jpg|png|gif|pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar/;
         const extname = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
 
         // Allowed mimetypes
@@ -39,7 +39,14 @@ const upload = multer({
             'application/msword', // .doc
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
             'application/vnd.ms-excel', // .xls
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+            'application/vnd.ms-powerpoint', // .ppt
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation', // .pptx
+            'application/zip', // .zip
+            'application/x-zip-compressed', // .zip (alternative)
+            'application/x-rar-compressed', // .rar
+            'application/octet-stream', // Generic binary (for .rar and other archives)
+            'application/x-rar' // .rar (alternative)
         ];
 
         const mimetypeAllowed = allowedMimetypes.includes(file.mimetype);

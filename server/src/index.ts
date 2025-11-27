@@ -90,7 +90,9 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.json());
+// Increase body size limits for file uploads
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
 app.use(cookieParser());
 
 // Serve uploaded files

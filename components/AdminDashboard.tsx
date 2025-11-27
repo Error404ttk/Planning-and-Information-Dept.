@@ -51,6 +51,7 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
   const [category, setCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Derive categories from navLinks
   const categories = useMemo(() => navLinks.map(link => link.name), [navLinks]);
@@ -106,6 +107,8 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
     }
 
     setIsUploading(true);
+    setUploadProgress(0);
+
     try {
       let fileUrl = initialData?.fileUrl;
       let fileType = initialData?.fileType;
@@ -114,14 +117,38 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
         const formData = new FormData();
         formData.append('file', file);
 
-        const uploadRes = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData
+        // Use XMLHttpRequest for progress tracking
+        const uploadData = await new Promise<{ fileUrl: string; mimetype: string }>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+
+          xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+              const percentComplete = Math.round((e.loaded / e.total) * 100);
+              setUploadProgress(percentComplete);
+            }
+          });
+
+          xhr.addEventListener('load', () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const response = JSON.parse(xhr.responseText);
+                resolve(response);
+              } catch (error) {
+                reject(new Error('Invalid response format'));
+              }
+            } else {
+              reject(new Error(`Upload failed with status ${xhr.status}`));
+            }
+          });
+
+          xhr.addEventListener('error', () => {
+            reject(new Error('Upload failed'));
+          });
+
+          xhr.open('POST', '/api/upload');
+          xhr.send(formData);
         });
 
-        if (!uploadRes.ok) throw new Error('Upload failed');
-
-        const uploadData = await uploadRes.json();
         fileUrl = uploadData.fileUrl;
         fileType = uploadData.mimetype;
       }
@@ -145,6 +172,7 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
       // Reset form
       setFile(null);
       setTitle('');
+      setUploadProgress(0);
       if (onCancelEdit) onCancelEdit();
 
     } catch (error) {
@@ -152,6 +180,7 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
       MySwal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้', 'error');
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -211,6 +240,25 @@ const ResourceUploadForm = ({ onUpload, onUpdate, initialData, onCancelEdit, nav
           <p className="text-xs text-gray-500 mt-1">ไฟล์ปัจจุบัน: <a href={initialData.fileUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">{initialData.fileUrl.split('/').pop()}</a></p>
         )}
       </div>
+
+      {/* Upload Progress Bar */}
+      {isUploading && uploadProgress > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-700 font-medium">กำลังอัพโหลด...</span>
+            <span className="text-green-600 font-bold">{uploadProgress}%</span>
+          </div>
+          <div className="relative w-full h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+            <div
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-300 ease-out rounded-full shadow-lg"
+              style={{ width: `${uploadProgress}%` }}
+            >
+              <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex gap-2">
         <button
           type="submit"
