@@ -24,9 +24,18 @@ model NewsArticle {
   excerpt   String   @db.Text
   content   String?  @db.Text
   imageUrl  String   @db.LongText
+  externalLink String? @db.Text
   date      String
+  images    NewsImage[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model NewsImage {
+  id        String      @id @default(cuid())
+  url       String      @db.LongText
+  newsId    String
+  news      NewsArticle @relation(fields: [newsId], references: [id], onDelete: Cascade)
 }
 
 model AuditLog {

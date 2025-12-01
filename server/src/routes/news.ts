@@ -8,7 +8,10 @@ const prisma = new PrismaClient();
 // Public: Get all news
 router.get('/', async (req, res) => {
     try {
-        const news = await prisma.newsArticle.findMany({ orderBy: { date: 'desc' } });
+        const news = await prisma.newsArticle.findMany({
+            orderBy: { date: 'desc' },
+            include: { images: true }
+        });
         res.json(news);
     } catch (error) {
         console.error('Error fetching news:', error);
@@ -18,10 +21,21 @@ router.get('/', async (req, res) => {
 
 // Protected: Create news
 router.post('/', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-    const { title, excerpt, content, imageUrl, date } = req.body;
+    const { title, excerpt, content, imageUrl, date, externalLink, images } = req.body;
     try {
         const news = await prisma.newsArticle.create({
-            data: { title, excerpt, content, imageUrl, date }
+            data: {
+                title,
+                excerpt,
+                content,
+                imageUrl,
+                date,
+                externalLink,
+                images: {
+                    create: images?.map((img: any) => ({ url: img.url || img })) || []
+                }
+            },
+            include: { images: true }
         });
 
         // Log action
@@ -44,11 +58,33 @@ router.post('/', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), async (req, 
 // Protected: Update news
 router.put('/:id', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
     const { id } = req.params;
-    const { title, excerpt, content, imageUrl, date } = req.body;
+    const { title, excerpt, content, imageUrl, date, externalLink, images } = req.body;
     try {
+        // First delete existing images if we are replacing them (simplest approach for now)
+        // Or better: we receive the full list of desired images. 
+        // For simplicity in this iteration: 
+        // 1. We'll delete all existing images for this news
+        // 2. Create new ones from the provided array
+        // This is not the most efficient but robust for "syncing" state
+
+        if (images) {
+            await prisma.newsImage.deleteMany({ where: { newsId: id } });
+        }
+
         const news = await prisma.newsArticle.update({
             where: { id },
-            data: { title, excerpt, content, imageUrl, date }
+            data: {
+                title,
+                excerpt,
+                content,
+                imageUrl,
+                date,
+                externalLink,
+                images: images ? {
+                    create: images.map((img: any) => ({ url: img.url || img }))
+                } : undefined
+            },
+            include: { images: true }
         });
 
         await prisma.auditLog.create({
@@ -62,6 +98,7 @@ router.put('/:id', authenticate, authorize(['ADMIN', 'SUPER_ADMIN']), async (req
 
         res.json(news);
     } catch (error) {
+        console.error('Error updating news:', error);
         res.status(500).json({ error: 'Failed to update news' });
     }
 });

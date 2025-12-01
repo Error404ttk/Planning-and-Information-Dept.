@@ -420,7 +420,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [imageProcessProgress, setImageProcessProgress] = useState(0);
-  const emptyNews: NewsArticle = { id: '', title: '', excerpt: '', date: '', imageUrl: '', href: '#' };
+  const emptyNews: NewsArticle = { id: '', title: '', excerpt: '', content: '', externalLink: '', date: '', imageUrl: '', href: '#', images: [] };
   const [newsForm, setNewsForm] = useState<NewsArticle>(emptyNews);
 
   const filteredNews = newsArticles.filter(news =>
@@ -435,14 +435,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
     setIsUploading(false);
   };
 
-  const handleNewsSubmit = (e: React.FormEvent) => {
+  const handleNewsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingNews) {
-      updateNews(newsForm);
-    } else {
-      addNews({ ...newsForm, id: Date.now().toString() });
+    try {
+      if (editingNews) {
+        await updateNews(newsForm);
+      } else {
+        await addNews({ ...newsForm, id: Date.now().toString(), images: newsForm.images || [] });
+      }
+      setIsNewsModalOpen(false);
+      MySwal.fire({
+        icon: 'success',
+        title: 'บันทึกสำเร็จ',
+        text: 'ข้อมูลข่าวประชาสัมพันธ์ถูกบันทึกเรียบร้อยแล้ว',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      console.error("Error saving news:", error);
+      MySwal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-    setIsNewsModalOpen(false);
   };
 
   // Unified Image Processing Function
@@ -1555,7 +1571,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1 text-gray-700">เนื้อหาย่อ</label>
-                  <textarea required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" rows={3} value={newsForm.excerpt} onChange={e => setNewsForm({ ...newsForm, excerpt: e.target.value })} />
+                  <textarea required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" rows={2} value={newsForm.excerpt} onChange={e => setNewsForm({ ...newsForm, excerpt: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">เนื้อหาข่าว (เต็ม)</label>
+                  <textarea className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" rows={5} value={newsForm.content || ''} onChange={e => setNewsForm({ ...newsForm, content: e.target.value })} placeholder="รายละเอียดข่าวฉบับเต็ม..." />
                 </div>
 
                 <div>
@@ -1632,8 +1652,54 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser }
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์อ่านต่อ</label>
-                  <input type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.href} onChange={e => setNewsForm({ ...newsForm, href: e.target.value })} />
+                  <label className="block text-sm font-medium mb-2 text-gray-700">รูปภาพเพิ่มเติม (Gallery)</label>
+                  <div className="grid grid-cols-3 gap-2 mb-2">
+                    {newsForm.images?.map((img, idx) => (
+                      <div key={idx} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                        <img src={img.url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setNewsForm(prev => ({ ...prev, images: prev.images?.filter((_, i) => i !== idx) }))}
+                          className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors shadow-sm"
+                        >
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      </div>
+                    ))}
+                    <label className="flex flex-col items-center justify-center aspect-square bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors">
+                      <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span className="text-xs text-gray-500 mt-1">เพิ่มรูป</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={async (e) => {
+                          if (e.target.files) {
+                            setIsUploading(true);
+                            const newImages: { id: string, url: string }[] = [];
+                            for (let i = 0; i < e.target.files.length; i++) {
+                              try {
+                                const dataUrl = await processImage(e.target.files[i]);
+                                newImages.push({ id: Date.now().toString() + i, url: dataUrl });
+                              } catch (err) {
+                                console.error("Error processing gallery image", err);
+                              }
+                            }
+                            setNewsForm(prev => ({ ...prev, images: [...(prev.images || []), ...newImages] }));
+                            setIsUploading(false);
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">ลิงก์ภายนอก (ถ้ามี)</label>
+                  <input type="text" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none" value={newsForm.externalLink || ''} onChange={e => setNewsForm({ ...newsForm, externalLink: e.target.value })} placeholder="https://example.com" />
                 </div>
                 <div className="flex justify-end gap-3 mt-8 pt-2 border-t border-gray-100">
                   <button type="button" onClick={() => setIsNewsModalOpen(false)} className="text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">ยกเลิก</button>

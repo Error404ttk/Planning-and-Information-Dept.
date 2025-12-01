@@ -47,8 +47,11 @@ export interface NewsArticle {
   imageUrl: string;
   title: string;
   excerpt: string;
+  content?: string;
+  externalLink?: string;
   date: string;
   href: string;
+  images?: { id: string; url: string }[];
 }
 
 export interface Resource {
